@@ -1,0 +1,146 @@
+[
+ {
+   "fixture_id": 2836661,
+   "event_name": "Ascot Gold Cup",
+   "event_number": 1,
+   "event_start_time": "2023-05-28T13:00:00Z",
+   "runner": "Stradivarius",
+   "sport_id": 12
+ },
+ {
+   "fixture_id": 7608816,
+   "event_name": "Ascot Gold Cup",
+   "event_number": 2,
+   "event_start_time": "2023-05-28T14:00:00Z",
+   "runner": "Subjectivist",
+   "sport_id": 12
+ },
+ {
+   "fixture_id": 2917103,
+   "event_name": "Ascot Gold Cup",
+   "event_number": 3,
+   "event_start_time": "2023-05-28T15:00:00Z",
+   "runner": "Trueshan",
+   "sport_id": 12
+ },
+ {
+   "fixture_id": 8876473,
+   "event_name": "Ascot Gold Cup",
+   "event_number": 4,
+   "event_start_time": "2023-05-28T16:00:00Z",
+   "runner": "Spanish Mission",
+   "sport_id": 12
+ },
+ {
+   "fixture_id": 2453535,
+   "event_name": "Tokyo Yushun",
+   "event_number": 1,
+   "event_start_time": "2023-05-28T04:40:00Z",
+   "runner": "Contrail",
+   "sport_id": 13
+ },
+ {
+   "fixture_id": 3163925,
+   "event_name": "Melbourne Cup",
+   "event_number": 1,
+   "event_start_time": "2023-05-28T05:00:00Z",
+   "runner": "Verry Elleegant",
+   "sport_id": 14
+ },
+ {
+   "fixture_id": 8585251,
+   "event_name": "Gran Premio Hipódromo Chile",
+   "event_number": 1,
+   "event_start_time": "2023-05-28T19:30:00Z",
+   "runner": "Cariblanco",
+   "sport_id": 13
+ },
+ {
+   "fixture_id": 2718302,
+   "event_name": "Epsom Derby",
+   "event_number": 1,
+   "event_start_time": "2023-05-28T11:00:00Z",
+   "runner": "Desert Crown",
+   "sport_id": 12
+ },
+ {
+   "fixture_id": 7717606,
+   "event_name": "Epsom Oaks",
+   "event_number": 2,
+   "event_start_time": "2023-05-28T12:00:00Z",
+   "runner": "Snowfall",
+   "sport_id": 12
+ },
+ {
+   "fixture_id": 2467196,
+   "event_name": "Warwick",
+   "event_number": 3,
+   "event_start_time": "2023-05-28T13:30:00Z",
+   "runner": "A Plus Tard",
+   "sport_id": 12
+ },
+ {
+   "fixture_id": 6497446,
+   "event_name": "Warwick",
+   "event_number": 4,
+   "event_start_time": "2023-05-28T14:30:00Z",
+   "runner": "Minella Times",
+   "sport_id": 12
+ },
+ {
+   "fixture_id": 4268488,
+   "event_name": "Goodwood",
+   "event_number": 5,
+   "event_start_time": "2023-05-28T15:30:00Z",
+   "runner": "Kyprios",
+   "sport_id": 12
+ },
+ {
+   "fixture_id": 5673402,
+   "event_name": "Nantes",
+   "event_number": 1,
+   "event_start_time": "2023-05-28T10:00:00Z",
+   "runner": "Torquator Tasso",
+   "sport_id": 12
+ },
+ {
+   "fixture_id": 7124034,
+   "event_name": "Irish Derby",
+   "event_number": 2,
+   "event_start_time": "2023-05-28T11:30:00Z",
+   "runner": "Hurricane Lane",
+   "sport_id": 12
+ },
+ {
+   "fixture_id": 6815608,
+   "event_name": "Nantes",
+   "event_number": 3,
+   "event_start_time": "2023-05-28T12:30:00Z",
+   "runner": "Sisfahan",
+   "sport_id": 12
+ },
+ {
+   "fixture_id": 7888437,
+   "event_name": "Nantes",
+   "event_number": 4,
+   "event_start_time": "2023-05-28T13:30:00Z",
+   "runner": "Essential Quality",
+   "sport_id": 12
+ },
+ {
+   "fixture_id": 1232166,
+   "event_name": "Nantes",
+   "event_number": 5,
+   "event_start_time": "2023-05-28T14:30:00Z",
+   "runner": "St Mark's Basilica",
+   "sport_id": 12
+ },
+ {
+   "fixture_id": 2319908,
+   "event_name": "Nantes",
+   "event_number": 6,
+   "event_start_time": "2023-05-28T15:30:00Z",
+   "runner": "Joan of Arc",
+   "sport_id": 12
+ }
+]
