@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import {
   MaterialReactTable,
   useMaterialReactTable,
@@ -6,7 +6,11 @@ import {
 } from 'material-react-table';
 import TraderCell from '../cell/trader'
 import MarketCell from '../cell/market'
-import data from '../assets/data/bets_placed.json';
+import Stack from '@mui/material/Stack'
+import Button from '@mui/material/Button'
+import data from '../assets/data/bets_placed.json'
+import {rtdb} from '../utils/firebase'
+import {  ref, onValue} from 'firebase/database';
 
 type Bets = {
     bid: number;
@@ -29,6 +33,20 @@ function MyCustomCell( value:string ) {
 
 const BetsTable = () => {
   //should be memoized or stable
+  // const [data, setData] = useState([]);
+  // useEffect(() => {
+  //   const messagesRef = ref(rtdb, 'bets'); // Reference to your data
+  //   onValue(messagesRef, (snapshot) => {
+  //     const data = snapshot.val();
+  //     if (data) {
+  //       console.log(data);
+
+  //     } else {
+  //       console.log('No Data')
+  //     }
+  //   });
+  // }, []);
+
   const columns = useMemo<MRT_ColumnDef<Bets>[]>(
     () => [
       {
@@ -113,7 +131,16 @@ const BetsTable = () => {
     data, //data must be memoized or stable (useState, useMemo, defined outside of this component, etc.)
   });
 
-  return <MaterialReactTable table={table} />;
+  return (
+    <div>
+      <Stack spacing={2} direction="row">
+        <Button variant="contained">Create Bets</Button>
+        <Button variant="contained">Resolve All Bets</Button>
+      </Stack>  
+      <MaterialReactTable table={table} />
+    </div>
+  )  
+  
 };
 
 export default BetsTable;

@@ -4,6 +4,8 @@ import {
   useMaterialReactTable,
   type MRT_ColumnDef,
 } from 'material-react-table';
+import Stack from '@mui/material/Stack';
+import Button from '@mui/material/Button';
 import data from '../assets/data/traders.json';
 
 
@@ -66,7 +68,15 @@ const TraderTable = () => {
     data, //data must be memoized or stable (useState, useMemo, defined outside of this component, etc.)
   });
 
-  return <MaterialReactTable table={table} />;
+  return (
+  
+      <div>
+        <Stack spacing={2} direction="row">
+          <Button variant="contained">Create Trader</Button>
+        </Stack>  
+        <MaterialReactTable table={table} />
+      </div>
+    );
 };
 
 export default TraderTable;

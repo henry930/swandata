@@ -1,11 +1,13 @@
-import { useMemo } from 'react';
+import { useMemo } from 'react'
 import {
   MaterialReactTable,
   useMaterialReactTable,
   type MRT_ColumnDef,
-} from 'material-react-table';
+} from 'material-react-table'
+import Stack from '@mui/material/Stack'
+import Button from '@mui/material/Button'
 import MarketCell from '../cell/market'
-import data from '../assets/data/model_selections.json';
+import data from '../assets/data/model_selections.json'
 
 
 type Model = {
@@ -94,7 +96,14 @@ const ModelTable = () => {
     data, //data must be memoized or stable (useState, useMemo, defined outside of this component, etc.)
   });
 
-  return <MaterialReactTable table={table} />;
+  return (
+    <div>
+      <Stack spacing={2} direction="row">
+        <Button variant="contained">Create Model</Button>
+      </Stack>  
+      <MaterialReactTable table={table} />
+    </div>
+  )
 };
 
 export default ModelTable;
