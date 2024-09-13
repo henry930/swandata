@@ -4,73 +4,25 @@ import {
   useMaterialReactTable,
   type MRT_ColumnDef,
 } from 'material-react-table';
-import data from './assets/data/bets_placed.json';
+import MarketCell from '../cell/market'
+import data from '../assets/data/model_selections.json';
 
-type Person = {
-    bid: number;
+
+type Model = {
+    model_id: number;
     selection_id:string;
     fixture_id: number;
     market_id: number;
     selection: string;
     value: string;
-    bet_time: string;
-    stake_size: number;
-    price: number;
-    trader_id: string;
+    bottom_price: number;
 };
 
-//nested data is ok, see accessorKeys in ColumnDef below
-// const data: Person[] = [
-//   {
-//     name: {
-//       firstName: 'John',
-//       lastName: 'Doe',
-//     },
-//     address: '261 Erdman Ford',
-//     city: 'East Daphne',
-//     state: 'Kentucky',
-//   },
-//   {
-//     name: {
-//       firstName: 'Jane',
-//       lastName: 'Doe',
-//     },
-//     address: '769 Dominic Grove',
-//     city: 'Columbus',
-//     state: 'Ohio',
-//   },
-//   {
-//     name: {
-//       firstName: 'Joe',
-//       lastName: 'Doe',
-//     },
-//     address: '566 Brakus Inlet',
-//     city: 'South Linda',
-//     state: 'West Virginia',
-//   },
-//   {
-//     name: {
-//       firstName: 'Kevin',
-//       lastName: 'Vandy',
-//     },
-//     address: '722 Emie Stream',
-//     city: 'Lincoln',
-//     state: 'Nebraska',
-//   },
-//   {
-//     name: {
-//       firstName: 'Joshua',
-//       lastName: 'Rolluffs',
-//     },
-//     address: '32188 Larkin Turnpike',
-//     city: 'Omaha',
-//     state: 'Nebraska',
-//   },
-// ];
 
-const Table = () => {
+
+const ModelTable = () => {
   //should be memoized or stable
-  const columns = useMemo<MRT_ColumnDef<Person>[]>(
+  const columns = useMemo<MRT_ColumnDef<Model>[]>(
     () => [
       {
         accessorKey: 'selection_id', //access nested data with dot notation
@@ -84,7 +36,8 @@ const Table = () => {
       },
       {
         accessorKey: 'market_id', //normal accessorKey
-        header: 'Market ID',
+        header: 'Market',
+        Cell: ({ cell }) => (<MarketCell id={cell.getValue<number>()} />),
         size: 50,
       },
       {
@@ -93,23 +46,13 @@ const Table = () => {
         size: 150,
       },
       {
-        accessorKey: 'bet_time',
-        header: 'Bet Time',
+        accessorKey: 'bottom_price',
+        header: 'Bottom Price',
         size: 100,
       },
       {
-        accessorKey: 'stake_size',
-        header: 'Stake Size',
-        size: 100,
-      },
-      {
-        accessorKey: 'price',
-        header: 'Price',
-        size: 100,
-      },
-      {
-        accessorKey: 'trader_id',
-        header: 'Trader ID',
+        accessorKey: 'value',
+        header: 'Value',
         size: 100,
       },
       
@@ -147,10 +90,11 @@ const Table = () => {
       variant: 'outlined',
     },
     columns,
+    enableEditing: false,
     data, //data must be memoized or stable (useState, useMemo, defined outside of this component, etc.)
   });
 
   return <MaterialReactTable table={table} />;
 };
 
-export default Table;
+export default ModelTable;
