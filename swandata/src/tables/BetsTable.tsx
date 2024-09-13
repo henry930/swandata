@@ -8,10 +8,9 @@ import TraderCell from '../cell/trader'
 import MarketCell from '../cell/market'
 import Stack from '@mui/material/Stack'
 import Button from '@mui/material/Button'
-import data from '../assets/data/bets_placed.json'
+// import data from '../assets/data/bets_placed.json'
 import {rtdb} from '../utils/firebase'
-import {  ref, onValue} from 'firebase/database';
-
+import { ref,onValue} from 'firebase/database'; // If using Realtime Database
 type Bets = {
     bid: number;
     selection_id:string;
@@ -26,26 +25,20 @@ type Bets = {
 };
 
 
-function MyCustomCell( value:string ) {
-  return <span style={{ color: 'blue' }}>{value}</span>;
-}
-
 
 const BetsTable = () => {
-  //should be memoized or stable
-  // const [data, setData] = useState([]);
-  // useEffect(() => {
-  //   const messagesRef = ref(rtdb, 'bets'); // Reference to your data
-  //   onValue(messagesRef, (snapshot) => {
-  //     const data = snapshot.val();
-  //     if (data) {
-  //       console.log(data);
+  const [data, setData] = useState([]);
 
-  //     } else {
-  //       console.log('No Data')
-  //     }
-  //   });
-  // }, []);
+  useEffect(() => {
+    const betsRef = ref(rtdb, 'bets')
+
+    const unsubscribe = onValue(betsRef, (snapshot) => {
+      const bets = snapshot.val()
+      setData(bets)
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   const columns = useMemo<MRT_ColumnDef<Bets>[]>(
     () => [

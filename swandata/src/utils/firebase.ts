@@ -1,7 +1,7 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore'; // If using Firestore
-import { getDatabase } from 'firebase/database'; // If using Realtime Database
+import { getDatabase,ref,onValue} from 'firebase/database'; // If using Realtime Database
 
 // Replace with your actual Firebase config
 const firebaseConfig = {
@@ -20,5 +20,4 @@ const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app); // If using Firestore
 export const rtdb = getDatabase(app); // If using Realtime Database
-
 

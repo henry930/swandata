@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo,useState,useEffect } from 'react'
 import {
   MaterialReactTable,
   useMaterialReactTable,
@@ -7,8 +7,8 @@ import {
 import Stack from '@mui/material/Stack'
 import Button from '@mui/material/Button'
 import MarketCell from '../cell/market'
-import data from '../assets/data/model_selections.json'
-
+import {rtdb} from '../utils/firebase'
+import { ref,onValue} from 'firebase/database'; // If using Realtime Database
 
 type Model = {
     model_id: number;
@@ -24,6 +24,18 @@ type Model = {
 
 const ModelTable = () => {
   //should be memoized or stable
+  const [data, setData] = useState([]);
+  useEffect(() => {
+    const Ref = ref(rtdb, 'model')
+
+    const unsubscribe = onValue(Ref, (snapshot) => {
+      const data = snapshot.val()
+      setData(data)
+    });
+
+    return () => unsubscribe();
+  }, []);
+
   const columns = useMemo<MRT_ColumnDef<Model>[]>(
     () => [
       {
