@@ -5,7 +5,7 @@ import BetsTable from './tables/BetsTable'
 import IndividualFixturesTable from './tables/IndividualFixturesTable'
 import MarketsTable from './tables/MarketsTable'
 import {useState} from 'react'
-import ModelTable from './tables/ModelTable'
+import ExampleWithProviders from './tables/ModelTable'
 import TraderTable from './tables/TraderTable'
 import ParticipantFixturesTable from './tables/ParticipantFixturesTable'
 
@@ -73,7 +73,7 @@ interface TabPanelProps {
           <BetsTable />
         </CustomTabPanel>
         <CustomTabPanel value={value} index={5}>
-          <ModelTable/>
+          <ExampleWithProviders />
         </CustomTabPanel>
 
       </Box>

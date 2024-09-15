@@ -57,7 +57,7 @@ const BetsTable = () => {
       {
         accessorKey: 'market_id', //normal accessorKey
         header: 'Market ID',
-        Cell: ({ cell }) => (<MarketCell id={cell.getValue<number>()} />),
+        Cell: ({ cell }) => (<MarketCell id={cell.getValue<string>()} />),
 
         size: 50,
       },

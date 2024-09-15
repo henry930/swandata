@@ -27,22 +27,24 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import {
   QueryClient,
   QueryClientProvider,
-  useMutation,
   useQuery,
-  useQueryClient,
 } from '@tanstack/react-query';
 
-
-type UserApiResponse =  Array<cfg.Trader>;
-
+// Initial Setup
+type dataType = cfg.Trader;
 const tableName = 'trader';
+const keyName = 'trader_id'
+const dataColumns = cfg.Tradercolumns;
+
+type UserApiResponse =  Array<dataType>;
+
 
 const fetchData = async () => {
-  const snapshot = await get(ref(rtdb, 'trader'));
-  const data: cfg.Trader[] = [];
+  const snapshot = await get(ref(rtdb, tableName));
+  const data: dataType[] = [];
   snapshot.forEach((childSnapshot) => {
-    const childData = childSnapshot.val() as cfg.Trader;
-    childData.trader_id = childSnapshot.key;
+    const childData = childSnapshot.val() as dataType;
+    childData[keyName] = childSnapshot.key;
     data.push(childData);
   });
   return data;
@@ -61,20 +63,20 @@ const Table = () => {
       return json;
     }
   })
-  const createData =async (values:cfg.Trader) =>{
-      await set(ref(rtdb, tableName+'/' + values.trader_id), values)
+  const createData =async (values:dataType) =>{
+      await set(ref(rtdb, tableName+'/' + values[keyName]), values)
       .then(() => {
-        console.log('Data created successfully with key:', values.trader_id);
+        console.log('Data created successfully with key:', values[keyName]);
       })
       .catch((error) => {
         console.error('Error creating data:', error);
       });
 
   }
-  const updateData =async (values:cfg.Trader) =>{
-      await set(ref(rtdb, tableName+'/' + values.trader_id), values)
+  const updateData =async (values:dataType) =>{
+      await set(ref(rtdb, tableName+'/' + values[keyName]), values)
       .then(() => {
-        console.log('Data updated successfully with key:', values.trader_id);
+        console.log('Data updated successfully with key:', values[keyName]);
         refetch();
       })
       .catch((error) => {
@@ -90,28 +92,13 @@ const Table = () => {
             console.error('Error deleting data:', error);
           });
   }
-  const columns = useMemo<MRT_ColumnDef<cfg.Trader>[]>(
-    () => [
-      {
-        accessorKey: 'trader_id',
-        header: 'Trader ID',
-        enableEditing: false,
-        size: 50,
-      },
-      {
-        accessorKey: 'trader_name',
-        header: 'Trader Name',
-        muiEditTextFieldProps: {
-          required: true,
-        },
-        size: 50,
-      },
-    ],
+  const columns = useMemo<MRT_ColumnDef<dataType>[]>(
+    () =>  dataColumns,
     [],
   );
   
   //CREATE action. Some pre or post process in data editing
-  const handleCreateUser: MRT_TableOptions<cfg.Trader>['onCreatingRowSave'] = async ({
+  const handleCreateData: MRT_TableOptions<dataType>['onCreatingRowSave'] = async ({
     values,
     table,
   }) => {
@@ -121,7 +108,7 @@ const Table = () => {
   };
 
   //UPDATE action  Some pre or post process in data editing
-  const handleSaveUser: MRT_TableOptions<cfg.Trader>['onEditingRowSave'] = async ({
+  const handleSaveData: MRT_TableOptions<dataType>['onEditingRowSave'] = async ({
     values,
     table,
   }) => {
@@ -131,9 +118,9 @@ const Table = () => {
   };
 
   //DELETE action  Some pre or post process in data editing
-  const openDeleteConfirmModal = async(row: MRT_Row<cfg.Trader>) => {
+  const openDeleteConfirmModal = async(row: MRT_Row<dataType>) => {
     if (window.confirm('Are you sure you want to delete this trader?')) {
-      await deleteData(row.id);
+      await deleteData(row.original[keyName]);
       refetch();
     }
   };
@@ -169,15 +156,13 @@ const Table = () => {
     },
     columns,
     enableEditing: true,
-    getRowId: (row) => row.trader_id,
     muiTableContainerProps: {
       sx: {
         minHeight: '500px',
       },
     },
-    onCreatingRowSave: handleCreateUser,
-    onEditingRowSave: handleSaveUser,
-    //optionally customize modal content
+    onCreatingRowSave: handleCreateData,
+    onEditingRowSave: handleSaveData,
     renderCreateRowDialogContent: ({ table, row, internalEditComponents }) => (
       <>
         <DialogTitle variant="h3">Create New Trader</DialogTitle>
@@ -191,7 +176,6 @@ const Table = () => {
         </DialogActions>
       </>
     ),
-    //optionally customize modal content
     renderEditRowDialogContent: ({ table, row, internalEditComponents }) => (
       <>
         <DialogTitle variant="h3">Edit Trader</DialogTitle>
@@ -227,7 +211,8 @@ const Table = () => {
                   table.setCreatingRow(
                     createRow(table, {
                         trader_id: uuidv4(),
-                        trader_name: ''
+                        trader_name: '', 
+                        credit: 0
                     }),
                   );
                 }}
@@ -251,8 +236,6 @@ const Table = () => {
             <MaterialReactTable table={table} />
     );
 };
-
-
 
 const queryClient = new QueryClient();
 
