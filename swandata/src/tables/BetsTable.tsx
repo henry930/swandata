@@ -11,6 +11,8 @@ import Button from '@mui/material/Button'
 // import data from '../assets/data/bets_placed.json'
 import {rtdb} from '../utils/firebase'
 import { ref,onValue} from 'firebase/database'; // If using Realtime Database
+
+
 type Bets = {
     bid: number;
     selection_id:string;
