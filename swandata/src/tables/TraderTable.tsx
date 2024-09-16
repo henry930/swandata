@@ -24,6 +24,7 @@ import {
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import FixtureEdit from '../cell/fixtureEdit';
 import {
   QueryClient,
   QueryClientProvider,
@@ -93,7 +94,30 @@ const Table = () => {
           });
   }
   const columns = useMemo<MRT_ColumnDef<dataType>[]>(
-    () =>  dataColumns,
+    () =>   [
+              {
+                accessorKey: 'trader_id',
+                header: 'Trader ID',
+                enableEditing: false,
+                size: 50,
+              },
+              {
+                accessorKey: 'trader_name',
+                header: 'Trader Name',
+                Edit: ({ cell, column, row, table }) => {    
+                  return (<FixtureEdit id={cell.getValue<string>()}/>)
+                },
+                size: 50,
+              },
+              {
+                accessorKey: 'credit',
+                header: 'Credit',
+                muiEditTextFieldProps: {
+                  required: true,
+                },
+                size: 50,
+              },
+            ],
     [],
   );
   

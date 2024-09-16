@@ -63,6 +63,7 @@ export const MarketColumns =  [
     accessorKey: 'market_name',
     header: 'Market Name',
     size: 50,
+    
 },
 ];
 

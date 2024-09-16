@@ -29,6 +29,7 @@ import { ref, get, set, remove} from 'firebase/database'; // If using Realtime D
 import * as cfg from '../utils/variables';
 import DeleteIcon from '@mui/icons-material/Delete';
 import MarketCell from '../cell/market'
+import FixtureEdit from '../cell/fixtureEdit'
 
 type dataType = cfg.Model
 const tableName = 'model'
@@ -66,6 +67,9 @@ const Example = () => {
       {
         accessorKey: 'fixture_id',
         header: 'Fixture ID',
+        Edit: ({ cell, column, row, table }) => {    
+          return (<FixtureEdit id={cell.getValue<string>()}/>)
+        },
         size: 50,
       },
       {
