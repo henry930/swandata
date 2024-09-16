@@ -1,9 +1,9 @@
+
 export interface Trader {
     trader_id: string;
     trader_name: string;
     credit: number;
 }
-
 
 export interface Market {
     market_id: string;

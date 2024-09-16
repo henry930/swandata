@@ -1,4 +1,4 @@
-import { useMemo, useEffect, useState} from 'react';
+import { useMemo , useState,useEffect} from 'react';
 import {
   MRT_EditActionButtons,
   MaterialReactTable,
@@ -24,29 +24,63 @@ import {
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import FixtureEdit from '../cell/fixtureEdit';
 import {
-  QueryClient,
-  QueryClientProvider,
   useQuery,
 } from '@tanstack/react-query';
 
+// Initial Setup
+// type any = any; 
 
-type UserApiResponse =  Array<cfg.Market>;
+type UserApiResponse =  Array<any>;
 
-const tableName = 'markets';
+interface Params {
+  tableName: string;
+  keyName: string;
+  type: string;
+  columns: string;
+}
+
+const Table = (_props: {type:string}) => {
+  
+  let type=_props.type;
+  const [tableName, setTableName] = useState('trader');
+  const [keyName, setKeyName] = useState('trader_id');
+  let dummyData: cfg.Trader
+  const [dataColumns,setDataColumns] = useState<object>([])
+
+  useEffect(() => {
+    switch (type){
+      default:
+      case 'trader':
+          setTableName('trader')
+          setKeyName('trader_id')
+          setDataColumns(cfg.Tradercolumns)
+      break;
+
+      case 'markets':
+          setTableName('markets')
+          setKeyName('market_id')
+          setDataColumns(cfg.MarketColumns)
+      break;
+    }
+
+  }, []);
 
 
-const Table = () => {
-  const [length, setLength] = useState(0);  
   const fetchData = async () => {
     const snapshot = await get(ref(rtdb, tableName));
-    const data: cfg.Market[] = [];
-    snapshot.forEach((childSnapshot) => {
-      const childData = childSnapshot.val() as cfg.Market;
-      childData.market_id = childSnapshot.key;
-      data.push(childData);
-    });
-    setLength(data.length);
+    const data: any[] = [];
+    try {
+      snapshot.forEach((childSnapshot) => {
+        const childData = childSnapshot.val() as any;
+        childData[keyName] = childSnapshot.key;
+        data.push(childData);
+      });
+    } catch(e){
+      console.log("Error");
+    }
+
     return data;
   };
   const {
@@ -61,20 +95,20 @@ const Table = () => {
       return json;
     }
   })
-  const createData =async (values:cfg.Market) =>{
-      await set(ref(rtdb, tableName+'/' + values.market_id), values)
+  const createData =async (values:any) =>{
+      await set(ref(rtdb, tableName+'/' + values[keyName]), values)
       .then(() => {
-        console.log('Data created successfully with key:', values.market_id);
+        console.log('Data created successfully with key:', values[keyName]);
       })
       .catch((error) => {
         console.error('Error creating data:', error);
       });
 
   }
-  const updateData =async (values:cfg.Market) =>{
-      await set(ref(rtdb, tableName+'/' + values.market_id), values)
+  const updateData =async (values:any) =>{
+      await set(ref(rtdb, tableName+'/' + values[keyName]), values)
       .then(() => {
-        console.log('Data updated successfully with key:', values.market_id);
+        console.log('Data updated successfully with key:', values[keyName]);
         refetch();
       })
       .catch((error) => {
@@ -90,13 +124,13 @@ const Table = () => {
             console.error('Error deleting data:', error);
           });
   }
-  const columns = useMemo<MRT_ColumnDef<cfg.Market>[]>(
-    () =>  cfg.MarketColumns,
+  const columns = useMemo<MRT_ColumnDef<any>[]>(
+    () =>   dataColumns,
     [],
   );
   
   //CREATE action. Some pre or post process in data editing
-  const handleCreateUser: MRT_TableOptions<cfg.Market>['onCreatingRowSave'] = async ({
+  const handleCreateData: MRT_TableOptions<any>['onCreatingRowSave'] = async ({
     values,
     table,
   }) => {
@@ -106,7 +140,7 @@ const Table = () => {
   };
 
   //UPDATE action  Some pre or post process in data editing
-  const handleSaveUser: MRT_TableOptions<cfg.Market>['onEditingRowSave'] = async ({
+  const handleSaveData: MRT_TableOptions<any>['onEditingRowSave'] = async ({
     values,
     table,
   }) => {
@@ -116,12 +150,13 @@ const Table = () => {
   };
 
   //DELETE action  Some pre or post process in data editing
-  const openDeleteConfirmModal = async(row: MRT_Row<cfg.Market>) => {
-    if (window.confirm('Are you sure you want to delete this market?')) {
-      await deleteData(row.original.market_id);
+  const openDeleteConfirmModal = async(row: MRT_Row<any>) => {
+    if (window.confirm('Are you sure you want to delete this trader?')) {
+      await deleteData(row.original[keyName]);
       refetch();
     }
   };
+
 
   const table = useMaterialReactTable({
     enableColumnFilterModes: true,
@@ -158,11 +193,11 @@ const Table = () => {
         minHeight: '500px',
       },
     },
-    onCreatingRowSave: handleCreateUser,
-    onEditingRowSave: handleSaveUser,
+    onCreatingRowSave: handleCreateData,
+    onEditingRowSave: handleSaveData,
     renderCreateRowDialogContent: ({ table, row, internalEditComponents }) => (
       <>
-        <DialogTitle variant="h3">Create New Market</DialogTitle>
+        <DialogTitle variant="h3">Create New Trader</DialogTitle>
         <DialogContent
           sx={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}
         >
@@ -200,50 +235,39 @@ const Table = () => {
         </Tooltip>
       </Box>
     ),
-    renderTopToolbarCustomActions: ({ table }) => {
-      
-      let id = uuidv4();
-      
-      return (
-          <div className="toolbar">
-            <Button
-                    variant="contained"
-                    onClick={() => {
-                      table.setCreatingRow(
-                        createRow(table, {
-                          "market_name":"",
-                          "market_id": id
-                        }),
-                      );
-                    }}
-                  >
-              Create New Market
-            </Button>
+    renderTopToolbarCustomActions: ({ table }) => (
+      <div className="toolbar">
+        <Button
+                variant="contained"
+                onClick={() => {
+                  table.setCreatingRow(
+                    createRow(table, {
+                        trader_id: uuidv4(),
+                        trader_name: '', 
+                        credit: 0
+                    }),
+                  );
+                }}
+              >
+          Create New Trader
+        </Button>
 
-            <Button
-            variant="contained"
-            onClick={()=>refetch()}
-            >
-                Reload Data
-            </Button>
-          </div>
-          
-        )
-    },
+        <Button
+        variant="contained"
+        onClick={()=>refetch()}
+        >
+            Reload Data
+        </Button>
+      </div>
+      
+    ),
     data, 
   });
-
 
   return (  
             <MaterialReactTable table={table} />
     );
 };
 
-const queryClient = new QueryClient();
 
-const MarketsTable = () => (
-  //Put this with your other react-query providers near root of your app
-    <Table />
-);
-
-export default MarketsTable;
+export default Table;
