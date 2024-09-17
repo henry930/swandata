@@ -2,17 +2,16 @@ import { useMemo , useState,useEffect} from 'react';
 import {
   MRT_EditActionButtons,
   MaterialReactTable,
-  type MRT_ColumnDef,
   type MRT_Row,
   type MRT_TableOptions,
   useMaterialReactTable,
   createRow,
+  MRT_ColumnDef,
 } from 'material-react-table';
 
 import { v4 as uuidv4 } from 'uuid';
 import {rtdb} from '../utils/firebase'
 import { ref, get, set, remove} from 'firebase/database'; // If using Realtime Database
-import * as cfg from '../utils/variables'
 import {
   Box,
   Button,
@@ -24,30 +23,264 @@ import {
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import FixtureEdit from '../cell/fixtureEdit';
 import {
   useQuery,
 } from '@tanstack/react-query';
-
-// Initial Setup
-// type any = any; 
+import {dbUtils} from '../utils/firebase'
+import * as cfg from '../utils/variables'
+import TraderCell from '../cell/trader'
+import FixtureEdit from '../cell/fixtureEdit'
+import {MarketCell,MarketEdit} from '../cell/market'
 
 type UserApiResponse =  Array<any>;
 
-interface Params {
-  tableName: string;
-  keyName: string;
-  type: string;
-  columns: string;
-}
 
 const Table = (_props: {type:string}) => {
   
-  let type=_props.type;
+  let type=_props.type || 'trader';
   const [tableName, setTableName] = useState('trader');
   const [keyName, setKeyName] = useState('trader_id');
-  let dummyData: cfg.Trader
-  const [dataColumns,setDataColumns] = useState<object>([])
+  const [columns,setColumns] = useState<MRT_ColumnDef<any,any>[]>([]);
+  const [editedData, setEditedData] = useState<Record<string, any>>({});
+
+  // Column Definition. (I am sorry that, I can't seperate them into other files. TO do)
+  const TraderColumns = useMemo<MRT_ColumnDef<any>[]>(
+    () =>  [
+      {
+        accessorKey: 'trader_id',
+        header: 'Trader ID',
+        enableEditing: false,
+        size: 50,
+      },
+      {
+        accessorKey: 'trader_name',
+        header: 'Trader Name',
+        muiEditTextFieldProps: {
+          required: true,
+        },
+        size: 50,
+      },
+      {
+        accessorKey: 'credit',
+        header: 'Credit',
+        muiEditTextFieldProps: {
+          required: true,
+          type: 'number',
+        },
+        size: 50,
+      }
+  ],
+    [],
+  );
+  const BetsColumns = useMemo<MRT_ColumnDef<any>[]>(
+    () => [
+      {
+        accessorKey: 'selection_id', //access nested data with dot notation
+        header: 'Selection ID',
+        size: 50,
+      },
+      {
+        accessorKey: 'fixture_id',
+        header: 'Fixture ID',
+        size: 50,
+      },
+      {
+        accessorKey: 'market_id', //normal accessorKey
+        header: 'Market ID',
+        // Cell: ({ cell }) => (<MarketCell id={cell.getValue<number>()} />),
+
+        size: 50,
+      },
+      {
+        accessorKey: 'selection',
+        header: 'Selection',
+        size: 150,
+      },
+      {
+        accessorKey: 'bet_time',
+        header: 'Bet Time',
+        size: 100,
+      },
+      {
+        accessorKey: 'stake_size',
+        header: 'Stake Size',
+        size: 100,
+      },
+      {
+        accessorKey: 'price',
+        header: 'Price',
+        size: 100,
+      },
+      {
+        accessorKey: 'trader_id',
+        header: 'Trader',
+        Cell: ({ cell }) => (<TraderCell id={cell.getValue<string>()} />),
+        size: 100,
+      },
+      
+    ],
+    [],
+  );
+  const MarketColumns = useMemo<MRT_ColumnDef<any>[]>(
+    () =>  [
+      {
+          accessorKey: 'market_id', //access nested data with dot notation
+          enableEditing: false,
+          header: 'Market ID',
+          size: 50,
+      },
+      {
+          accessorKey: 'market_name',
+          header: 'Market Name',
+          size: 50,
+          
+      },
+  ],
+    [],
+  );
+  const ModelColumns = useMemo<MRT_ColumnDef<any>[]>(
+    () => 
+   
+    [
+      {
+        accessorKey: 'selection_id',
+        header: 'Selection ID',
+        enableEditing: false,
+        size: 80,
+      },
+      {
+        accessorKey: 'fixture_id',
+        header: 'Fixture ID',
+        Edit: ({ cell, column, row, table }) => {    
+          return (<FixtureEdit id={cell.getValue<string>()}/>)
+        },
+        size: 50,
+      },
+      {
+        accessorKey: 'market_id', //normal accessorKey
+        header: 'Market',
+        Cell: ({ cell }) => (<MarketCell id={cell.getValue<string>()} />),
+        Edit: ({ cell, column, row, table }) => {    
+          function handleChange(e:any){
+              let myDb = new dbUtils(tableName,keyName)
+              const item = { ...row.original }; // Create a copy to avoid mutation
+              item.market_id = e.id;
+              console.log(cell,row)
+              row._valuesCache['market_id']= e.id            
+          }
+          return (<MarketEdit id={cell.getValue<string>()} onChange={handleChange}/>)
+        },
+
+        size: 50,
+      },
+      {
+        accessorKey: 'selection',
+        header: 'Selection',
+        size: 150,
+        editVariant: 'select',
+        editSelectOptions: cfg.selectionStates,
+        muiEditTextFieldProps: ({ row }) => ({
+          select: true,
+          onChange: (event) => {
+            setEditedData({ ...editedData, [row.id]: row.original });
+          }
+
+        }),
+      },
+      {
+        accessorKey: 'bottom_price',
+        header: 'Bottom Price',
+        size: 100,
+        muiEditTextFieldProps: ({ cell, row }) => ({
+          type: 'number',
+          required: true,
+          onBlur: (event) => {
+            setEditedData({ ...editedData, [row.id]: row.original });
+          },
+        }),
+      },
+      {
+        accessorKey: 'value',
+        header: 'Value',
+        size: 100,
+       
+        muiEditTextFieldProps: ({ cell, row }) => ({
+          type: 'number',
+          required: false
+        }),
+      },
+    ],
+    [editedData],
+  );
+
+  const SportsColumns = useMemo<MRT_ColumnDef<any>[]>(
+    () =>  [
+      {
+          accessorKey: 'sport_id', //access nested data with dot notation
+          enableEditing: false,
+          header: 'Sport ID',
+          size: 50,
+      },
+      {
+          accessorKey: 'sport_name',
+          header: 'Sport Name',
+          size: 50,
+          
+      },
+      {
+        accessorKey: 'description',
+        header: 'Sport Description',
+        size: 200,
+        
+    },
+  ],
+    [],
+  );
+
+  const EventsColumns = useMemo<MRT_ColumnDef<any>[]>(
+    () =>  [
+      {
+          accessorKey: 'event_id', //access nested data with dot notation
+          enableEditing: false,
+          header: 'Event ID',
+          size: 50,
+      },
+      {
+          accessorKey: 'sport_id',
+          header: 'Sport',
+          size: 50,
+          
+      },
+      {
+        accessorKey: 'event_time',
+        header: 'Event Start Time',
+        size: 50,        
+      },
+      {
+        accessorKey: 'participants',
+        header: 'Participants',
+        size: 50,        
+      },
+      {
+        accessorKey: 'result',
+        header: 'Results',
+        size: 50,        
+      },
+      {
+        accessorKey: 'score',
+        header: 'Score',
+        size: 50,        
+      },
+      {
+        accessorKey: 'winner',
+        header: 'Winner',
+        size: 50,        
+      },
+  ],
+    [],
+  );
+  //////////
+  
 
   useEffect(() => {
     switch (type){
@@ -55,13 +288,37 @@ const Table = (_props: {type:string}) => {
       case 'trader':
           setTableName('trader')
           setKeyName('trader_id')
-          setDataColumns(cfg.Tradercolumns)
+          setColumns(TraderColumns)
       break;
-
+      
       case 'markets':
           setTableName('markets')
           setKeyName('market_id')
-          setDataColumns(cfg.MarketColumns)
+          setColumns(MarketColumns)
+      break;
+
+      case 'bets':
+        setTableName('bets')
+        setKeyName('bid')
+        setColumns(BetsColumns)
+      break;
+
+      case 'model':
+        setTableName('model')
+        setKeyName('selection_id')
+        setColumns(ModelColumns)
+      break;
+
+      case 'sports':
+        setTableName('sports')
+        setKeyName('sport_id')
+        setColumns(SportsColumns)
+      break;
+
+      case 'events':
+        setTableName('events')
+        setKeyName('event_id')
+        setColumns(EventsColumns)
       break;
     }
 
@@ -83,9 +340,10 @@ const Table = (_props: {type:string}) => {
 
     return data;
   };
+ 
   const {
     data = [], //your data and api response will probably be different
-    refetch,
+    refetch
   } = useQuery<UserApiResponse>({
     queryKey: [
       tableName // the Query Key of query. Default is the table name. 
@@ -124,11 +382,6 @@ const Table = (_props: {type:string}) => {
             console.error('Error deleting data:', error);
           });
   }
-  const columns = useMemo<MRT_ColumnDef<any>[]>(
-    () =>   dataColumns,
-    [],
-  );
-  
   //CREATE action. Some pre or post process in data editing
   const handleCreateData: MRT_TableOptions<any>['onCreatingRowSave'] = async ({
     values,
@@ -145,7 +398,7 @@ const Table = (_props: {type:string}) => {
     table,
   }) => {
     table.setEditingRow(null); //exit editing mode
-    await updateData(values);
+    await updateData(values); 
     refetch();
   };
 
@@ -156,7 +409,6 @@ const Table = (_props: {type:string}) => {
       refetch();
     }
   };
-
 
   const table = useMaterialReactTable({
     enableColumnFilterModes: true,
@@ -197,7 +449,7 @@ const Table = (_props: {type:string}) => {
     onEditingRowSave: handleSaveData,
     renderCreateRowDialogContent: ({ table, row, internalEditComponents }) => (
       <>
-        <DialogTitle variant="h3">Create New Trader</DialogTitle>
+        <DialogTitle variant="h3">Create New {tableName}</DialogTitle>
         <DialogContent
           sx={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}
         >
@@ -210,7 +462,7 @@ const Table = (_props: {type:string}) => {
     ),
     renderEditRowDialogContent: ({ table, row, internalEditComponents }) => (
       <>
-        <DialogTitle variant="h3">Edit Trader</DialogTitle>
+        <DialogTitle variant="h3">Edit {tableName}</DialogTitle>
         <DialogContent
           sx={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}
         >
@@ -249,7 +501,7 @@ const Table = (_props: {type:string}) => {
                   );
                 }}
               >
-          Create New Trader
+          Create New {tableName}
         </Button>
 
         <Button
@@ -263,11 +515,11 @@ const Table = (_props: {type:string}) => {
     ),
     data, 
   });
-
   return (  
-            <MaterialReactTable table={table} />
+            <MaterialReactTable table={table}/>
     );
 };
+
 
 
 export default Table;

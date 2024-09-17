@@ -25,47 +25,6 @@ export interface CustomObject {
 }
 
 
-export const Tradercolumns =  [
-      {
-        accessorKey: 'trader_id',
-        header: 'Trader ID',
-        enableEditing: false,
-        size: 50,
-      },
-      {
-        accessorKey: 'trader_name',
-        header: 'Trader Name',
-        muiEditTextFieldProps: {
-          required: true,
-        },
-        size: 50,
-      },
-      {
-        accessorKey: 'credit',
-        header: 'Credit',
-        muiEditTextFieldProps: {
-          required: true,
-        },
-        size: 50,
-      },
-    ]
- 
-
-
-export const MarketColumns =  [
-{
-    accessorKey: 'market_id', //access nested data with dot notation
-    enableEditing: false,
-    header: 'Market ID',
-    size: 50,
-},
-{
-    accessorKey: 'market_name',
-    header: 'Market Name',
-    size: 50,
-    
-},
-];
 
 export const selectionStates = [
   "Win", "Correct score", "Under", "Home", "Draw", "Away", "Over" 

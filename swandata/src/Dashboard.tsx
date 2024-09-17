@@ -1,15 +1,8 @@
+import {useState} from 'react'
+import Table from './tables/Table'
 import Tabs from '@mui/material/Tabs'
 import Tab from '@mui/material/Tab'
 import Box from '@mui/material/Box'
-import BetsTable from './tables/BetsTable'
-import IndividualFixturesTable from './tables/IndividualFixturesTable'
-import MarketsTable from './tables/MarketsTable'
-import {useState} from 'react'
-import ExampleWithProviders from './tables/ModelTable'
-// import TraderTable from './tables/TraderTable'
-import Table from './tables/Table'
-import ParticipantFixturesTable from './tables/ParticipantFixturesTable'
-
 
 
 interface TabPanelProps {
@@ -53,8 +46,9 @@ const Dashboard = () => {
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
             <Tab label="Traders" {...a11yProps(0)} />
-            <Tab label="Individual Fixtures" {...a11yProps(1)} />
-            <Tab label="Participant Fixtures" {...a11yProps(2)} />
+            <Tab label="Sports" {...a11yProps(1)} />
+            <Tab label="Events" {...a11yProps(2)} />
+
             <Tab label="Markets" {...a11yProps(3)} />
             <Tab label="Bets" {...a11yProps(4)} />
             <Tab label="Model" {...a11yProps(5)} />
@@ -64,19 +58,19 @@ const Dashboard = () => {
           <Table type="trader"/>
         </CustomTabPanel>
         <CustomTabPanel value={value} index={1}>
-          <IndividualFixturesTable />
+          <Table type="sports" />
         </CustomTabPanel>
         <CustomTabPanel value={value} index={2}>
-          <ParticipantFixturesTable/>
+          <Table type="events" />
         </CustomTabPanel>
         <CustomTabPanel value={value} index={3}>
-          <MarketsTable />
+          <Table type="markets" />   
         </CustomTabPanel>
         <CustomTabPanel value={value} index={4}>
-          <BetsTable />
+          <Table type="bets" />
         </CustomTabPanel>
         <CustomTabPanel value={value} index={5}>
-          <ExampleWithProviders />
+          <Table type="model" />
         </CustomTabPanel>
       </Box>
   );

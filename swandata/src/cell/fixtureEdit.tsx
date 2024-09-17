@@ -40,15 +40,12 @@ const FixtureEdit = (_props: {id: string}) => {
     }, []);
 
   return (
-    <Box height={200}>
         <Autocomplete
           disablePortal
           options={top100Films}
           sx={{ width: 300 }}
           renderInput={(params) => <TextField {...params} label="Fixture" />}
         />
-    </Box>
-
   );
 };
 

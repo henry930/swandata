@@ -1,7 +1,7 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore'; // If using Firestore
-import { getDatabase,ref,onValue} from 'firebase/database'; // If using Realtime Database
+import { getDatabase,ref,onValue,get,set} from 'firebase/database'; // If using Realtime Database
 
 // Replace with your actual Firebase config
 const firebaseConfig = {
@@ -18,6 +18,51 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
-export const db = getFirestore(app); // If using Firestore
 export const rtdb = getDatabase(app); // If using Realtime Database
+
+export class dbUtils {
+  private tableName: string;
+  private keyName: string;
+  
+  constructor(tableName:string,keyName:string){
+    this.tableName = tableName;
+    this.keyName = keyName;
+  }
+  fetchData = async () => {
+    const snapshot = await get(ref(rtdb, this.tableName));
+    const data: any[] = [];
+    try {
+      snapshot.forEach((childSnapshot) => {
+        const childData = childSnapshot.val() as any;
+        childData[this.keyName] = childSnapshot.key;
+        data.push(childData);
+      });
+    } catch(e){
+      console.log("Error");
+    }
+    return data;
+  };
+  getData = async(id:string) =>{
+    const dbRef = ref(rtdb, this.tableName+'/'+id); // Replace 'database' with your database reference
+    let snapshot = await get(dbRef)
+    if (snapshot.exists()) 
+      return snapshot.val()
+    else 
+        return null
+  }   
+  saveData = async(id:string, values:any) =>{
+    console.log('Data', id,values);
+
+    await set(ref(rtdb, this.tableName+'/' + id), values)
+    .then(() => {
+      console.log('Data updated successfully with key:', id,values);
+    })
+    .catch((error) => {
+      console.error('Error updating data:', error);
+    });
+  }
+
+}
+
+
 
