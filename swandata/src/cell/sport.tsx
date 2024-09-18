@@ -9,16 +9,16 @@ interface Option {
     id: string;
 }
 
-interface TraderEditProps {
+interface SportEditProps {
     id: string;
     onChange: (newValue: Option, componentId: string) => void;
   }
 
-const tableName = 'trader'
-const keyName = 'trader_id'
+const tableName = 'sports'
+const keyName = 'sport_id'
 
 
-export const TraderCell = (_props: {id: string}) => {
+export const SportCell = (_props: {id: string}) => {
   let id = _props.id;
     const [data, setData] = useState('');
     const myDb = new dbUtils(tableName,keyName)
@@ -26,7 +26,7 @@ export const TraderCell = (_props: {id: string}) => {
         const getData = async() =>{
             try {
                 let res = await myDb.getData(id)
-                setData(res.trader_name)
+                setData(res.sport_name)
             } catch(e){
                 setData('')
             }
@@ -41,8 +41,8 @@ export const TraderCell = (_props: {id: string}) => {
   );
 };
 
-export const TraderEdit = ({ id , onChange}: TraderEditProps) => {
-    const [data, setData] = useState<cfg.Trader[]>([]);
+export const SportEdit = ({ id , onChange}: SportEditProps) => {
+    const [data, setData] = useState<cfg.Sports[]>([]);
     const [option, setOption] = useState<Option[]>([]);
     
     const [selectedValue, setSelectedValue] = useState<Option>({label:'',id:'0'});
@@ -55,12 +55,11 @@ export const TraderEdit = ({ id , onChange}: TraderEditProps) => {
     useEffect(() => {
         const getData = async() =>{
             let data = await myDb.fetchData()
-            console.log(data)
             let arr:Option[] = []
             data.forEach(item=>{
                 let res:Option ={label:'',id:''}
-                res.label = item.trader_name
-                res.id = item.trader_id
+                res.label = item.sport_name
+                res.id = item.sport_id
                 if (res.id == id){
                     setSelectedValue(res)
                 }
@@ -79,7 +78,7 @@ export const TraderEdit = ({ id , onChange}: TraderEditProps) => {
             options={option}
             onChange={handleChange}
             sx={{ width: 300 }}
-            renderInput={(params) => <TextField {...params} label="Trader"/>}
+            renderInput={(params) => <TextField {...params} label="Sport"/>}
           />
     );
   };

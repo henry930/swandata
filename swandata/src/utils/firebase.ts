@@ -1,7 +1,6 @@
-import { initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore'; // If using Firestore
-import { getDatabase,ref,onValue,get,set} from 'firebase/database'; // If using Realtime Database
+import { initializeApp } from 'firebase/app'
+import { getAuth } from 'firebase/auth'
+import { getDatabase,ref,get,set, query,equalTo,orderByChild, onValue} from 'firebase/database' // If using Realtime Database
 
 // Replace with your actual Firebase config
 const firebaseConfig = {
@@ -13,37 +12,37 @@ const firebaseConfig = {
   messagingSenderId: "783167923770",
   appId: "1:783167923770:web:484dfc9b9daab18c753703",
   measurementId: "G-XG0FPG3Z3R"
-};
+}
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
-export const auth = getAuth(app);
-export const rtdb = getDatabase(app); // If using Realtime Database
+const app = initializeApp(firebaseConfig)
+export const auth = getAuth(app)
+export const rtdb = getDatabase(app) // If using Realtime Database
 
 export class dbUtils {
-  private tableName: string;
-  private keyName: string;
+  private tableName: string
+  private keyName: string
   
   constructor(tableName:string,keyName:string){
-    this.tableName = tableName;
-    this.keyName = keyName;
+    this.tableName = tableName
+    this.keyName = keyName
   }
   fetchData = async () => {
-    const snapshot = await get(ref(rtdb, this.tableName));
-    const data: any[] = [];
+    const snapshot = await get(ref(rtdb, this.tableName))
+    const data: any[] = []
     try {
       snapshot.forEach((childSnapshot) => {
-        const childData = childSnapshot.val() as any;
-        childData[this.keyName] = childSnapshot.key;
-        data.push(childData);
-      });
+        const childData = childSnapshot.val() as any
+        childData[this.keyName] = childSnapshot.key
+        data.push(childData)
+      })
     } catch(e){
-      console.log("Error");
+      console.log("Error")
     }
-    return data;
-  };
+    return data
+  }
   getData = async(id:string) =>{
-    const dbRef = ref(rtdb, this.tableName+'/'+id); // Replace 'database' with your database reference
+    const dbRef = ref(rtdb, this.tableName+'/'+id) // Replace 'database' with your database reference
     let snapshot = await get(dbRef)
     if (snapshot.exists()) 
       return snapshot.val()
@@ -51,14 +50,34 @@ export class dbUtils {
         return null
   }   
   saveData = async(id:string, values:any) =>{
-    console.log('Data', id,values);
-
+    console.log('Data', id,values)
     await set(ref(rtdb, this.tableName+'/' + id), values)
     .then(() => {
-      console.log('Data updated successfully with key:', id,values);
+      console.log('Data updated successfully with key:', id,values)
     })
     .catch((error) => {
-      console.error('Error updating data:', error);
+      console.error('Error updating data:', error)
+    })
+  }
+
+  queryData = async(field:string, value:string) =>{
+    const dbRef = ref(rtdb, this.tableName) 
+    const queryRef = query(dbRef, orderByChild(field), equalTo(value));
+    return new Promise((resolve, reject) => {
+      onValue(queryRef, (snapshot) => {
+        try {
+          const data = snapshot.val();
+          let values:Array<any>
+          try {
+            values = Object.values(data) || []
+          } catch(e){
+            values = []
+          }
+          resolve(values); // Resolve the Promise with the data
+        } catch (error) {
+          reject(error); // Reject the Promise if there's an error
+        }
+      });
     });
   }
 

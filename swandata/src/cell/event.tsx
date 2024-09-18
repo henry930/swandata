@@ -9,16 +9,16 @@ interface Option {
     id: string;
 }
 
-interface TraderEditProps {
+interface eventEditProps {
     id: string;
     onChange: (newValue: Option, componentId: string) => void;
   }
 
-const tableName = 'trader'
-const keyName = 'trader_id'
+const tableName = 'events'
+const keyName = 'event_id'
 
 
-export const TraderCell = (_props: {id: string}) => {
+export const EventCell = (_props: {id: string}) => {
   let id = _props.id;
     const [data, setData] = useState('');
     const myDb = new dbUtils(tableName,keyName)
@@ -26,7 +26,7 @@ export const TraderCell = (_props: {id: string}) => {
         const getData = async() =>{
             try {
                 let res = await myDb.getData(id)
-                setData(res.trader_name)
+                setData(res.event_name)
             } catch(e){
                 setData('')
             }
@@ -41,8 +41,8 @@ export const TraderCell = (_props: {id: string}) => {
   );
 };
 
-export const TraderEdit = ({ id , onChange}: TraderEditProps) => {
-    const [data, setData] = useState<cfg.Trader[]>([]);
+export const EventEdit = ({ id , onChange}: eventEditProps) => {
+    const [data, setData] = useState<cfg.Events[]>([]);
     const [option, setOption] = useState<Option[]>([]);
     
     const [selectedValue, setSelectedValue] = useState<Option>({label:'',id:'0'});
@@ -59,8 +59,8 @@ export const TraderEdit = ({ id , onChange}: TraderEditProps) => {
             let arr:Option[] = []
             data.forEach(item=>{
                 let res:Option ={label:'',id:''}
-                res.label = item.trader_name
-                res.id = item.trader_id
+                res.label = item.event_name
+                res.id = item.event_id
                 if (res.id == id){
                     setSelectedValue(res)
                 }
@@ -79,7 +79,7 @@ export const TraderEdit = ({ id , onChange}: TraderEditProps) => {
             options={option}
             onChange={handleChange}
             sx={{ width: 300 }}
-            renderInput={(params) => <TextField {...params} label="Trader"/>}
+            renderInput={(params) => <TextField {...params} label="event"/>}
           />
     );
   };

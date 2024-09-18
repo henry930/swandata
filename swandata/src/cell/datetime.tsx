@@ -1,24 +1,34 @@
-import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo'
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker'
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
 
-function Picker() {
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
+interface DateTimeEditProps {
+  datetime: string
+  onChange: (newValue: Date) => void
+}
+
+  export const DateTimeEdit = ({ datetime , onChange}: DateTimeEditProps) => {
+
+    const handleChange = async (newValue:any) =>{
+        onChange(newValue.toISOString());
+    }
     return (
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <DemoContainer components={['DateTimePicker']}>
-          <DateTimePicker label="Basic date time picker" />
-        </DemoContainer>
-      </LocalizationProvider>
-    );
+      <DemoContainer components={['DateTimePicker']}>
+        <DateTimePicker label="Basic date time picker" value={dayjs(datetime)} onChange={handleChange}/>
+      </DemoContainer>
+    )
   }
-
-  const DateTimeCell = (_props: {datetime: string}) => {
-    let datetime = _props.datetime;
-    
-    return (
-          <Picker />
-    );
-  };
   
-  export default DateTimeCell;
+  export const DateTimeCell = (_props:{ datetime:string}) => {
+    let datetime = _props.datetime
+    return (
+      <DemoContainer components={['DateTimePicker']}>
+        <DateTimePicker label="Basic date time picker" value={dayjs(datetime)} disabled/>
+      </DemoContainer>
+    )
+  }
