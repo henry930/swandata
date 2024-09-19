@@ -27,7 +27,27 @@ events: // Combling individual-fixtures and participant fixtures, it's the game 
   - sport_id //Which sport of the game
   - status //Whether the result came yet.
 
-mo
+model:
+  - selection_id //Unique ID
+  - event_id //Refer to which game
+  - fixture_id //Refer to past table of fixture. No longer used
+  - market_id // Refer to which bet market it betting
+  - selection // Home/Away/Draw/Over/Under the parameter of the bettings
+  - value // Score, Number of card/ goal/ corners, depend on which market it betting.
+
+bets:
+  - bet_id // Unique ID
+  - bet_time
+  - event_id //Which game it bets
+  - market_id // Which market it bets
+  - price // How much it bets
+  - selection // The parameter of the model
+  - selection_id // Which model selected
+  - stake_size //How many bets on
+  - status // Whether payout come
+  - trader_id // Who bets on
+  - value // Also parameter of the model 
+  
     
 
 
