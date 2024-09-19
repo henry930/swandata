@@ -8,7 +8,6 @@ import {
   createRow,
   MRT_ColumnDef,
 } from 'material-react-table'
-
 import {dbUtils, rtdb} from '../utils/firebase'
 import { ref, get, set, remove} from 'firebase/database' // If using Realtime Database
 import {
@@ -26,6 +25,8 @@ import {
   useQuery,
 } from '@tanstack/react-query'
 import * as cfg from '../utils/variables'
+
+// All Cell Component for custom editing and rendering
 import {TraderCell,TraderEdit} from '../cell/trader'
 import {EventCell,EventEdit} from '../cell/event'
 import {MarketCell,MarketEdit} from '../cell/market'
@@ -45,7 +46,8 @@ const Table = (_props: {type:string}) => {
   const [keyName, setKeyName] = useState('trader_id')
   const [columns,setColumns] = useState<MRT_ColumnDef<any,any>[]>([])
   const [editedData, setEditedData] = useState<Record<string, any>>({})
-  // Column Definition. (I am sorry that, I can't seperate them into other files. TO do)
+
+  // Column Definition. (I am sorry that, I can't seperate them into other files. TO DO)
   const TraderColumns = useMemo<MRT_ColumnDef<any>[]>(
     () =>  [
       {
@@ -432,8 +434,7 @@ const Table = (_props: {type:string}) => {
     [],
   )
 
-  
-
+  // Initial Variable Settings for Display different data by master table settings
   useEffect(() => {
     switch (type){
       default:
@@ -473,8 +474,11 @@ const Table = (_props: {type:string}) => {
         setColumns(EventsColumns)
       break
     }
- 
   }, [])
+
+  // Custom Button Actions for different usage
+  
+  // Resolve All Bets of selected traders 
   const handleResolveBetsByTrader = async (table:any) =>{
     const selectedRows = table.getSelectedRowModel().rows
     let myDb = new dbUtils('bets','bet_id')
@@ -489,6 +493,8 @@ const Table = (_props: {type:string}) => {
       }
     }
   }
+
+  // Once Events Results come, update bets status to 'Payout' to notify which Bets records need to be resolved.
   const handleUpdateBetsByEvents = async (table:any) =>{
     const selectedRows = table.getSelectedRowModel().rows
     let myDb = new dbUtils('bets','bet_id')
@@ -506,11 +512,10 @@ const Table = (_props: {type:string}) => {
       }catch(e){
           console.error(e)
       }
-
-
     }
-
   }
+
+  // Resolve all selected events' bets
   const handleResolveBetsByEvents = async (table:any) =>{
     const selectedRows = table.getSelectedRowModel().rows
     let myDb = new dbUtils('bets','bet_id')
@@ -523,14 +528,10 @@ const Table = (_props: {type:string}) => {
       }catch(e){
           console.error(e)
       }
-
-
     }
-
   }
 
-
-
+  // Resolve all Payout status's bets
   const handleResolvePayoutBets = async (table:any) =>{
     let myDb = new dbUtils('bets','bet_id')
       try {
@@ -540,9 +541,9 @@ const Table = (_props: {type:string}) => {
       }catch(e){
           console.error(e)
       }
-
-
   }
+
+  // Resolve all selected bets
   const handleResolveBets = async (table:any) =>{
     const selectedRows = table.getSelectedRowModel().rows
 
@@ -554,6 +555,7 @@ const Table = (_props: {type:string}) => {
 
   }
 
+  // Fetch data for table
   const fetchData = async () => {
     const snapshot = await get(ref(rtdb, tableName))
     const data: any[] = []
@@ -566,10 +568,10 @@ const Table = (_props: {type:string}) => {
     } catch(e){
       console.log("Error")
     }
-
     return data
   }
  
+  // Query setup for table.
   const {
     data = [], //your data and api response will probably be different
     refetch,
@@ -582,6 +584,7 @@ const Table = (_props: {type:string}) => {
       return json
     }
   })
+  // General data functions for tables
   const createData =async (values:any) =>{
       await set(ref(rtdb, tableName+'/' + values[keyName]), values)
       .then(() => {
@@ -611,7 +614,8 @@ const Table = (_props: {type:string}) => {
             console.error('Error deleting data:', error)
           })
   }
-  //CREATE action. Some pre or post process in data editing
+
+  //CREATE action for create data button. Some pre or post process in data editing
   const handleCreateData: MRT_TableOptions<any>['onCreatingRowSave'] = async ({
     values,
     table,
@@ -621,7 +625,7 @@ const Table = (_props: {type:string}) => {
     refetch()
   }
 
-  //UPDATE action  Some pre or post process in data editing
+  //UPDATE action for edit data button. Some pre or post process in data editing
   const handleSaveData: MRT_TableOptions<any>['onEditingRowSave'] = async ({
     values,
     table,
@@ -631,7 +635,7 @@ const Table = (_props: {type:string}) => {
     refetch()
   }
 
-  //DELETE action  Some pre or post process in data editing
+  //DELETE action for delete data button. Some pre or post process in data editing
   const openDeleteConfirmModal = async(row: MRT_Row<any>) => {
     if (window.confirm('Are you sure you want to delete this trader?')) {
       await deleteData(row.original[keyName])
@@ -717,6 +721,8 @@ const Table = (_props: {type:string}) => {
         </Tooltip>
       </Box>
     ),
+
+    // Custom Buttons for different tables}
     renderTopToolbarCustomActions: ({ table }) => (
       <div className="toolbar">
         <Button
@@ -757,8 +763,7 @@ const Table = (_props: {type:string}) => {
             <Button variant="contained" onClick={()=>handleResolveBetsByTrader(table)}>Resolve Bets By Trader</Button>
           </div>
         )}  
-      </div>
-      
+      </div>      
     ),
     data, 
   })
@@ -766,7 +771,5 @@ const Table = (_props: {type:string}) => {
             <MaterialReactTable table={table}/>
     )
 }
-
-
 
 export default Table

@@ -9,12 +9,13 @@ export const resolveBet = async (id:string) =>{
     // If result come, calculate profit / loss 
     // Update credit by profit/ loss on the trader account
 
-
+    // setup any db utils necessary
     let betsDb = new dbUtils('bets','bet_id')
     let traderDb = new dbUtils('trader','trader_id')
     let eventDb = new dbUtils('events','event_id')
     let modelDb =new dbUtils('model','selection_id')
 
+    // Get all required value for usage
     let betRecord = await betsDb.getData(id)
     let event_id = betRecord['event_id']
     let selection_id = betRecord['selection_id']
@@ -29,9 +30,7 @@ export const resolveBet = async (id:string) =>{
     let size = betRecord['stake_size']
     let isBetSuccess = false
 
-    console.log(trader_id, traderRecord)
-
-
+    // Assume profit earn is: stake_size * (bet price - bottom price)
     async function updateCredit(){
         let earn:number
         earn = size *(betPrice - bottomPrice)
@@ -65,6 +64,7 @@ export const resolveBet = async (id:string) =>{
     // Update bettings in different selection sincerio. 
     // Win: Bet Price - Model Bottom Price) * Stack Size 
     // Loss: Assume credit already deduced when betting. Loss no credit deduce
+    // Each Market will have different conditions for win.
     switch(marketId){
         case cfg._WIN_MARKET_ID:
             if (result['win'])
@@ -139,7 +139,7 @@ export const resolveBet = async (id:string) =>{
 
         break;
 
-        // To Do
+        // To Do. Not quite familar with cricket bettings. pending.
         case cfg._6TH_OVER_FIRST_INNINGS:
         case cfg._10TH_OVER_FIRST_INNINGS:
         case cfg._15TH_OVER_FIRST_INNINGS:

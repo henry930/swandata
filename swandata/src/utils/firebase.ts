@@ -2,7 +2,7 @@ import { initializeApp } from 'firebase/app'
 import { getAuth } from 'firebase/auth'
 import { getDatabase,ref,get,set, update,query,equalTo,orderByChild, onValue} from 'firebase/database' // If using Realtime Database
 
-// Replace with your actual Firebase config
+// Firebase key settings. For key, should be stored by export variable. Since it's only testing task, waived. 
 const firebaseConfig = {
   apiKey: "AIzaSyDQcNpR73RjnxH_SPQs_MNAnV8mB_Id-Ok",
   authDomain: "swandata-cd40f.firebaseapp.com",
@@ -19,6 +19,7 @@ const app = initializeApp(firebaseConfig)
 export const auth = getAuth(app)
 export const rtdb = getDatabase(app) // If using Realtime Database
 
+// All DB functionalities are here for easy coding.
 export class dbUtils {
   private tableName: string
   private keyName: string

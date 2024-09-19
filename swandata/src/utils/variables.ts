@@ -1,11 +1,9 @@
-import { CastForEducationRounded } from '@mui/icons-material'
 import { v4 as uuidv4 } from 'uuid'
 
+// All tables have their initial value for data creation.
 export const getInitValue=(type:string)=>{
   let item:object
   switch(type){
-   
-
     case 'markets':
         item = {
           'market_id':uuidv4(),
@@ -76,7 +74,7 @@ export const getInitValue=(type:string)=>{
   return item
 }
 
-
+// Each tables has its data schema (will be illustrated in README.md)
 export interface Trader {
   trader_id: string
   trader_name: string
@@ -131,34 +129,31 @@ export interface Events {
   fixture_id: string
   status: string
 }
-export interface CustomObject {
-  [key: string]: any
-}
 
+// All selection options are stored here. 
 export const selectionStates = [
   "Win", "Correct score", "Under", "Home", "Draw", "Away", "Over" 
 ]
 
-export const statusStates = [
-  "Betting", "Payout", "Resolve-Win", "Resolve-Loss","Problem"]
+export const statusStates = ["Betting", "Payout", "Resolve-Win", "Resolve-Loss","Problem"]
 
-  export const eventStates = [
-    "pending", "result"]
+export const eventStates = ["pending", "result"]
 
-    export const _WIN_MARKET_ID = 1
-    export const _PLACE_MARKET_ID = 2
-    export const _EACH_WAY_MARKET_ID = 5
-    export const _MATCH_ODDS_MARKET_ID = 11
-    export const _CORRECT_SCORE_MARKET_ID= 12
-    export const _TOTAL_GOALS_MARKET_ID= 13
-    export const _TOTAL_CARD_MARKET_ID = 14
-    export const _TOTAL_CORNERS_MARKET_ID = 15
-    export const _FIRST_TERM_TO_SCORE_MARKET_ID = 16
-    export const _6TH_OVER_FIRST_INNINGS =22
-    export const _10TH_OVER_FIRST_INNINGS =23
-    export const _15TH_OVER_FIRST_INNINGS =24
-    export const _20TH_OVER_FIRST_INNINGS =25
-    export const _6TH_OVER_SECOND_INNINGS =26
-    export const _10TH_OVER_SECOND_INNINGS =27
-    export const _15TH_OVER_SECOND_INNINGS =28
-    export const _20TH_OVER_SECOND_INNINGS =29
+// For bettings resolving, each market have their own calculation. Any new market record need to update code here.
+export const _WIN_MARKET_ID = 1
+export const _PLACE_MARKET_ID = 2
+export const _EACH_WAY_MARKET_ID = 5
+export const _MATCH_ODDS_MARKET_ID = 11
+export const _CORRECT_SCORE_MARKET_ID= 12
+export const _TOTAL_GOALS_MARKET_ID= 13
+export const _TOTAL_CARD_MARKET_ID = 14
+export const _TOTAL_CORNERS_MARKET_ID = 15
+export const _FIRST_TERM_TO_SCORE_MARKET_ID = 16
+export const _6TH_OVER_FIRST_INNINGS =22
+export const _10TH_OVER_FIRST_INNINGS =23
+export const _15TH_OVER_FIRST_INNINGS =24
+export const _20TH_OVER_FIRST_INNINGS =25
+export const _6TH_OVER_SECOND_INNINGS =26
+export const _10TH_OVER_SECOND_INNINGS =27
+export const _15TH_OVER_SECOND_INNINGS =28
+export const _20TH_OVER_SECOND_INNINGS =29
