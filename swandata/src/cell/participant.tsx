@@ -1,20 +1,12 @@
 import {useEffect, useState} from 'react'
-import {dbUtils} from '../utils/firebase'
 import Chip from '@mui/material/Chip'
 import { TiDelete } from "react-icons/ti"
 import TextField from '@mui/material/TextField'
-import * as cfg from '../utils/variables'
-
-interface Option {
-    label: string
-    id: string
-}
 
 interface ParticipantEditProps {
     value: string
     onChange: (newValue: string) => void
   }
-
 
 export const ParticipantCell = (_props: {value: string}) => {
   let str = _props.value
@@ -33,8 +25,6 @@ export const ParticipantCell = (_props: {value: string}) => {
   )
 }
 
-
-
 export const ParticipantEdit = ({ value , onChange}: ParticipantEditProps) => {
   const [text, setText] = useState<string>("")
   const [chips, setChips] = useState<Array<string>>([])
@@ -51,17 +41,14 @@ export const ParticipantEdit = ({ value , onChange}: ParticipantEditProps) => {
       }
       setChips(arr)
     }
-
   }, [])
 
   function removeChip(chipToRemove:any) {
-    // filtering out the chip that the user wants to remove
     const updatedChips = chips.filter((chip) => chip !== chipToRemove)
     setChips(updatedChips)
   }
 
-  function handlePressEnter(e:any) {
-  
+  function handlePressEnter(e:any) {  
     if (e.key === "Enter") e.preventDefault()
     if (e.key !== "Enter" || !text) return
     if (chips.includes(text)) {
@@ -84,7 +71,7 @@ export const ParticipantEdit = ({ value , onChange}: ParticipantEditProps) => {
 
   return (
     <div>
-      <label htmlFor="tags">Tags</label>
+      <label htmlFor="tags">Participants</label>
       <div className="input-container">
         <ul className="chips">
           {chips.map((chip) => (
@@ -95,7 +82,6 @@ export const ParticipantEdit = ({ value , onChange}: ParticipantEditProps) => {
           ))}
         </ul>
         <TextField id="tags" label="Participants" variant="filled" value={text} onChange={(e) => setText(e.target.value)} onKeyDown={handlePressEnter}/>
-        
       </div>
       {validationError && <p className="error-message">{validationError}</p>}
     </div>

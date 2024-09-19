@@ -8,15 +8,13 @@ interface Option {
     label: string
     id: string
 }
-
 interface TraderEditProps {
     id: string
     onChange: (newValue: Option, componentId: string) => void
-  }
+}
 
 const tableName = 'trader'
 const keyName = 'trader_id'
-
 
 export const TraderCell = (_props: {id: string}) => {
   let id = _props.id
@@ -30,11 +28,9 @@ export const TraderCell = (_props: {id: string}) => {
             } catch(e){
                 setData('')
             }
-
         }
         getData()
     }, [])
-
 
   return (
         <span>{data}</span>

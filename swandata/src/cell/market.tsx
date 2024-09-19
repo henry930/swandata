@@ -2,7 +2,6 @@ import {useEffect, useState} from 'react'
 import {dbUtils} from '../utils/firebase'
 import TextField from '@mui/material/TextField'
 import Autocomplete from '@mui/material/Autocomplete'
-import * as cfg from '../utils/variables'
 
 interface Option {
     label: string
@@ -42,9 +41,7 @@ export const MarketCell = (_props: {id: string}) => {
 }
 
 export const MarketEdit = ({ id , onChange}: MarketEditProps) => {
-    const [data, setData] = useState<cfg.Market[]>([])
-    const [option, setOption] = useState<Option[]>([])
-    
+    const [option, setOption] = useState<Option[]>([])    
     const [selectedValue, setSelectedValue] = useState<Option>({label:'',id:'0'})
     const myDb = new dbUtils(tableName,keyName)
     
@@ -52,6 +49,7 @@ export const MarketEdit = ({ id , onChange}: MarketEditProps) => {
         setSelectedValue(newValue)
         onChange(newValue, id)
     }
+
     useEffect(() => {
         const getData = async() =>{
             let data = await myDb.fetchData()
@@ -66,7 +64,6 @@ export const MarketEdit = ({ id , onChange}: MarketEditProps) => {
                 }
                 arr.push(res)
             })
-            setData(data)
             setOption(arr)
         }
         getData()

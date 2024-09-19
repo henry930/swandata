@@ -8,15 +8,13 @@ interface Option {
     label: string
     id: string
 }
-
 interface SportEditProps {
     id: string
     onChange: (newValue: Option, componentId: string) => void
-  }
+}
 
 const tableName = 'sports'
 const keyName = 'sport_id'
-
 
 export const SportCell = (_props: {id: string}) => {
   let id = _props.id
@@ -30,12 +28,9 @@ export const SportCell = (_props: {id: string}) => {
             } catch(e){
                 setData('')
             }
-
         }
         getData()
     }, [])
-
-
   return (
         <span>{data}</span>
   )

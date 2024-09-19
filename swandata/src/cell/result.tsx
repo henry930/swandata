@@ -1,4 +1,3 @@
-// import data from '../assets/data/markets.json'
 import {useEffect, useState} from 'react'
 import {TextField,Button, FormGroup, FormControlLabel, Checkbox, FormControl,InputLabel, Select, MenuItem} from '@mui/material'
 import Dialog from '@mui/material/Dialog'
@@ -7,15 +6,13 @@ import DialogContent from '@mui/material/DialogContent'
 import DialogContentText from '@mui/material/DialogContentText'
 import DialogTitle from '@mui/material/DialogTitle'
 import Switch from '@mui/material/Switch'
-import {dbUtils} from '../utils/firebase'
 
 interface EditProps {
   value: string
   onChange: (newValue:string) => void
 }
 
-export const ResultCell = ( {value, onChange }:EditProps) => {
-    
+export const ResultCell = ( {value, onChange }:EditProps) => {    
     const [open, setOpen] = useState(false)
     const [win,setWin] = useState(false)
     const [place,setPlace]  = useState(false)
@@ -64,10 +61,8 @@ export const ResultCell = ( {value, onChange }:EditProps) => {
        catch(e){
           setJson({})
        }   
-
       }
     }, [])
-
 
       const handleClickOpen = () => {
         setOpen(true)
@@ -119,25 +114,15 @@ export const ResultCell = ( {value, onChange }:EditProps) => {
           setIsResult(newValue)
       }
       
-    
   return (
     <>
-    <Button
-    variant="contained" onClick={handleClickOpen} color={(isResult)?'success':'primary'}
-  >
-    Update Result
-</Button>
- <Dialog
- open={open}
- onClose={handleClose}
- PaperProps={{
-   component: 'form',
-   onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
-     event.preventDefault()
-     handleClose()
-   },
- }}
->
+    <Button variant="contained" onClick={handleClickOpen} color={(isResult)?'success':'primary'}>
+        Update Result
+    </Button>
+    <Dialog
+    open={open}
+    onClose={handleClose}
+    >
     <DialogTitle>Result Updates</DialogTitle>
         <DialogContent>
 
@@ -236,10 +221,8 @@ export const ResultCell = ( {value, onChange }:EditProps) => {
   )
 }
 
-
+// This component temporarily not used, but reserved for future development.
 export const ResultEdit = ({value, onChange }:EditProps) => {
-
-
   return (
     <Button
     variant="contained"
@@ -251,4 +234,4 @@ Update Result
 </Button>
   )
 }
-
+//////////
