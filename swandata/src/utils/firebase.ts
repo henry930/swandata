@@ -1,6 +1,6 @@
 import { initializeApp } from 'firebase/app'
 import { getAuth } from 'firebase/auth'
-import { getDatabase,ref,get,set, query,equalTo,orderByChild, onValue} from 'firebase/database' // If using Realtime Database
+import { getDatabase,ref,get,set, update,query,equalTo,orderByChild, onValue} from 'firebase/database' // If using Realtime Database
 
 // Replace with your actual Firebase config
 const firebaseConfig = {
@@ -49,11 +49,22 @@ export class dbUtils {
     else 
         return null
   }   
-  saveData = async(id:string, values:any) =>{
+  saveData = async(values:any) =>{
+    let id = values[this.keyName]
     console.log('Data', id,values)
     await set(ref(rtdb, this.tableName+'/' + id), values)
     .then(() => {
       console.log('Data updated successfully with key:', id,values)
+    })
+    .catch((error) => {
+      console.error('Error updating data:', error)
+    })
+  }
+  updateData = async(id:string,updates:any) =>{
+    
+    await update(ref(rtdb, this.tableName+'/' + id), updates)
+    .then(() => {
+      console.log('Data updated successfully with key:', id,updates)
     })
     .catch((error) => {
       console.error('Error updating data:', error)

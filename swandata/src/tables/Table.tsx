@@ -10,7 +10,6 @@ import {
 } from 'material-react-table'
 
 import {dbUtils, rtdb} from '../utils/firebase'
-import { v4 as uuidv4 } from 'uuid'
 import { ref, get, set, remove} from 'firebase/database' // If using Realtime Database
 import {
   Box,
@@ -28,12 +27,13 @@ import {
 } from '@tanstack/react-query'
 import * as cfg from '../utils/variables'
 import {TraderCell,TraderEdit} from '../cell/trader'
-import FixtureEdit from '../cell/fixtureEdit'
 import {EventCell,EventEdit} from '../cell/event'
 import {MarketCell,MarketEdit} from '../cell/market'
 import {SportCell,SportEdit} from '../cell/sport'
 import {DateTimeCell, DateTimeEdit} from '../cell/datetime'
+import {ResultCell} from '../cell/result'
 import {ParticipantCell, ParticipantEdit} from '../cell/participant'
+import {resolveBet,resolveSelectedBets} from '../action/bets'
 
 type UserApiResponse =  Array<any>
 
@@ -390,16 +390,42 @@ const Table = (_props: {type:string}) => {
       {
         accessorKey: 'result',
         header: 'Results',
+        Cell: ({ cell,column,row,table }) => {    
+          function handleChange(result:string){
+              row._valuesCache['result'] = result
+              row._valuesCache['status'] = 'result'
+
+
+            // It is cell. So, need to update manually
+              let myDb = new dbUtils('events','event_id')
+             
+              let item = {...[row._valuesCache]}
+              myDb.saveData(item)
+
+          }
+          return (<ResultCell value={cell.getValue<string>()}  onChange={handleChange}/>)
+        },  
+        Edit: ({ cell, column, row, table }) => {    
+          function handleChange(result:string){
+              row._valuesCache['result'] = result
+              row._valuesCache['status'] = 'result'
+
+          }
+          return (<ResultCell value={cell.getValue<string>()}  onChange={handleChange}/>)
+        },  
         size: 50,        
       },
       {
-        accessorKey: 'score',
-        header: 'Score',
-        size: 50,        
-      },
-      {
-        accessorKey: 'winner',
-        header: 'Winner',
+        accessorKey: 'status',
+        header: 'Status',
+        editVariant: 'select',
+        editSelectOptions: cfg.eventStates,
+        muiEditTextFieldProps: ({ row }) => ({
+          select: true,
+          onChange: (event) => {
+            setEditedData({ ...editedData, [row.id]: row.original })
+          }
+        }),
         size: 50,        
       },
   ],
@@ -449,7 +475,84 @@ const Table = (_props: {type:string}) => {
     }
  
   }, [])
+  const handleResolveBetsByTrader = async (table:any) =>{
+    const selectedRows = table.getSelectedRowModel().rows;
+    let myDb = new dbUtils('bets','bet_id')
+    for (let i=0;i<selectedRows.length;i++) {
+      let trader_id = selectedRows[i].original[keyName]
+      try {
+        let res = await myDb.queryData('trader_id',trader_id) as cfg.Bets[]
+        let ids = res.map((item:cfg.Bets) => item.bet_id);
+        resolveSelectedBets(ids)
+      }catch(e){
+          console.error(e)
+      }
+    }
+  }
+  const handleUpdateBetsByEvents = async (table:any) =>{
+    const selectedRows = table.getSelectedRowModel().rows;
+    let myDb = new dbUtils('bets','bet_id')
+    for (let i=0;i<selectedRows.length;i++) {
+      let event_id = selectedRows[i].original[keyName]
+      try {
+        let updates ={
+          'status':'Payout'
+        }
+        let res = await myDb.queryData('event_id',event_id) as cfg.Bets[]
+        let ids = res.map((item:cfg.Bets) => item.bet_id);
+        ids.forEach(id=>{
+          myDb.updateData(id,updates)
+        })
+      }catch(e){
+          console.error(e)
+      }
 
+
+    }
+
+  }
+  const handleResolveBetsByEvents = async (table:any) =>{
+    const selectedRows = table.getSelectedRowModel().rows;
+    let myDb = new dbUtils('bets','bet_id')
+    for (let i=0;i<selectedRows.length;i++) {
+      let event_id = selectedRows[i].original[keyName]
+      try {
+        let res = await myDb.queryData('event_id',event_id) as cfg.Bets[]
+        let ids = res.map((item:cfg.Bets) => item.bet_id);
+        resolveSelectedBets(ids)
+      }catch(e){
+          console.error(e)
+      }
+
+
+    }
+
+  }
+
+
+
+  const handleResolvePayoutBets = async (table:any) =>{
+    let myDb = new dbUtils('bets','bet_id')
+      try {
+        let res = await myDb.queryData('status','Payout') as cfg.Bets[]
+        let ids = res.map((item:cfg.Bets) => item.bet_id);
+        resolveSelectedBets(ids)
+      }catch(e){
+          console.error(e)
+      }
+
+
+  }
+  const handleResolveBets = async (table:any) =>{
+    const selectedRows = table.getSelectedRowModel().rows;
+
+    for (let i=0;i<selectedRows.length;i++) {
+      let id = selectedRows[i].original[keyName]
+      let returnMsg = await resolveBet(id)
+      console.log(returnMsg)
+    }
+
+  }
 
   const fetchData = async () => {
     const snapshot = await get(ref(rtdb, tableName))
@@ -638,8 +741,22 @@ const Table = (_props: {type:string}) => {
             Reload Data
         </Button>
         {(tableName=='bets') && (
-            <Button variant="contained">Resolve Bets</Button>
-          )}
+          <div>
+            <Button variant="contained" onClick={()=>handleResolveBets(table)}>Resolve Selected Bets</Button>
+            <Button variant="contained" onClick={()=>handleResolvePayoutBets(table)}>Resolve Payout Bets</Button>
+          </div>
+        )}  
+        {(tableName=='events') && (
+          <div>
+            <Button variant="contained" onClick={()=>handleResolveBetsByEvents(table)}>Resolve Bets By Event</Button>
+            <Button variant="contained" onClick={()=>handleUpdateBetsByEvents(table)}>Update Bets Status By Event</Button>
+          </div>
+        )}  
+        {(tableName=='trader') && (
+          <div>
+            <Button variant="contained" onClick={()=>handleResolveBetsByTrader(table)}>Resolve Bets By Trader</Button>
+          </div>
+        )}  
       </div>
       
     ),
