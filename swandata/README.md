@@ -1,10 +1,45 @@
-# Getting Started with Create React App
+# Backend and Database 
+This project we are using Firebase as the backend cloud service. https://firebase.google.com/
+The database I am using Realtime Database, which is noSQL with API. Easily to deploy and scale up. https://firebase.google.com/docs/database?hl=zh-tw 
+The console is using my personal account, please send request to henry930@gmail.com for admin access.
+The database schema is as below:
 
+trader:
+  - trader_id:string  // Unique ID
+  - trader_name: string // Name of trader
+  - credit: number  // How much they earn. Can be updated by resolving bets
+
+markets: // What Type of bettings
+  - market_id: string // Unique ID
+  - market_name: string // Name of Market
+
+sports:
+  - sport_id
+  - sport_name
+  - description
+
+events: // Combling individual-fixtures and participant fixtures, it's the game of those bettings on. 
+  - event_id
+  - event_name
+  - event_time
+  - participants //(including matching game, first one is home, second is away.)
+  - result //This is the JSON of all results. A component will help operators input all information of the result, so as to help resolving bettings.
+  - sport_id //Which sport of the game
+  - status //Whether the result came yet.
+
+mo
+    
+
+
+
+# Getting Started with Swandata Operation App
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
 
 In the project directory, you can run:
+### `npm install`
+Before start project, please run this command to install all required modules.
 
 ### `npm start`
 
