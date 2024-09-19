@@ -1,30 +1,30 @@
 // import data from '../assets/data/markets.json'
 import {useEffect, useState} from 'react'
-import {TextField,Button, FormGroup, FormControlLabel, Checkbox, FormControl,InputLabel, Select, MenuItem} from '@mui/material';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
-import Switch from '@mui/material/Switch';
+import {TextField,Button, FormGroup, FormControlLabel, Checkbox, FormControl,InputLabel, Select, MenuItem} from '@mui/material'
+import Dialog from '@mui/material/Dialog'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContent from '@mui/material/DialogContent'
+import DialogContentText from '@mui/material/DialogContentText'
+import DialogTitle from '@mui/material/DialogTitle'
+import Switch from '@mui/material/Switch'
 import {dbUtils} from '../utils/firebase'
 
 interface EditProps {
-  value: string;
-  onChange: (newValue:string) => void;
+  value: string
+  onChange: (newValue:string) => void
 }
 
 export const ResultCell = ( {value, onChange }:EditProps) => {
     
-    const [open, setOpen] = useState(false);
+    const [open, setOpen] = useState(false)
     const [win,setWin] = useState(false)
     const [place,setPlace]  = useState(false)
-    const [odds, setOdds] = useState('-');
-    const [score, setScore] = useState('');
-    const [goal, setGoal] = useState<number>(0);
-    const [card, setCard] = useState<number>(0);
-    const [corner, setCorner] = useState<number>(0);
-    const [firstScore, setFirstScore] = useState('-');
+    const [odds, setOdds] = useState('-')
+    const [score, setScore] = useState('')
+    const [goal, setGoal] = useState<number>(0)
+    const [card, setCard] = useState<number>(0)
+    const [corner, setCorner] = useState<number>(0)
+    const [firstScore, setFirstScore] = useState('-')
     const [isResult,setIsResult] = useState(false)
     const [isFirst6th,setIsFirst6th] = useState(false)
     const [isFirst10th,setIsFirst10th] = useState(false)
@@ -66,16 +66,16 @@ export const ResultCell = ( {value, onChange }:EditProps) => {
        }   
 
       }
-    }, []);
+    }, [])
 
 
       const handleClickOpen = () => {
-        setOpen(true);
-      };
+        setOpen(true)
+      }
 
       const handleClose = () => {
-        setOpen(false);
-      };
+        setOpen(false)
+      }
       
       const saveJson =() =>{
         let json = {
@@ -106,15 +106,15 @@ export const ResultCell = ( {value, onChange }:EditProps) => {
          onChange(result)
       }
       const handleUpdate = async () =>{
-          saveJson();
-          handleClose();
+          saveJson()
+          handleClose()
       }
       const handleOddsChange = (event:any) => {
           setOdds(event.target.value)
-      };
+      }
       const handleFirstChange = (event:any) => {
-        setFirstScore(event.target.value);
-      };
+        setFirstScore(event.target.value)
+      }
       const handleResult =(e:any, newValue:any) =>{
           setIsResult(newValue)
       }
@@ -133,8 +133,8 @@ export const ResultCell = ( {value, onChange }:EditProps) => {
  PaperProps={{
    component: 'form',
    onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
-     event.preventDefault();
-     handleClose();
+     event.preventDefault()
+     handleClose()
    },
  }}
 >
@@ -233,8 +233,8 @@ export const ResultCell = ( {value, onChange }:EditProps) => {
         </DialogActions>
 </Dialog>
 </>
-  );
-};
+  )
+}
 
 
 export const ResultEdit = ({value, onChange }:EditProps) => {
@@ -250,5 +250,5 @@ export const ResultEdit = ({value, onChange }:EditProps) => {
 Update Result
 </Button>
   )
-};
+}
 

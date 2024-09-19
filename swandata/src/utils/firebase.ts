@@ -73,23 +73,23 @@ export class dbUtils {
 
   queryData = async(field:string, value:string) =>{
     const dbRef = ref(rtdb, this.tableName) 
-    const queryRef = query(dbRef, orderByChild(field), equalTo(value));
+    const queryRef = query(dbRef, orderByChild(field), equalTo(value))
     return new Promise((resolve, reject) => {
       onValue(queryRef, (snapshot) => {
         try {
-          const data = snapshot.val();
+          const data = snapshot.val()
           let values:Array<any>
           try {
             values = Object.values(data) || []
           } catch(e){
             values = []
           }
-          resolve(values); // Resolve the Promise with the data
+          resolve(values) // Resolve the Promise with the data
         } catch (error) {
-          reject(error); // Reject the Promise if there's an error
+          reject(error) // Reject the Promise if there's an error
         }
-      });
-    });
+      })
+    })
   }
 
 }

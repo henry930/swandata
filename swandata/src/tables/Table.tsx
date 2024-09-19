@@ -476,13 +476,13 @@ const Table = (_props: {type:string}) => {
  
   }, [])
   const handleResolveBetsByTrader = async (table:any) =>{
-    const selectedRows = table.getSelectedRowModel().rows;
+    const selectedRows = table.getSelectedRowModel().rows
     let myDb = new dbUtils('bets','bet_id')
-    for (let i=0;i<selectedRows.length;i++) {
+    for (let i=0; i<selectedRows.length; i++) {
       let trader_id = selectedRows[i].original[keyName]
       try {
         let res = await myDb.queryData('trader_id',trader_id) as cfg.Bets[]
-        let ids = res.map((item:cfg.Bets) => item.bet_id);
+        let ids = res.map((item:cfg.Bets) => item.bet_id)
         resolveSelectedBets(ids)
       }catch(e){
           console.error(e)
@@ -490,16 +490,16 @@ const Table = (_props: {type:string}) => {
     }
   }
   const handleUpdateBetsByEvents = async (table:any) =>{
-    const selectedRows = table.getSelectedRowModel().rows;
+    const selectedRows = table.getSelectedRowModel().rows
     let myDb = new dbUtils('bets','bet_id')
-    for (let i=0;i<selectedRows.length;i++) {
+    for (let i=0; i<selectedRows.length; i++) {
       let event_id = selectedRows[i].original[keyName]
       try {
         let updates ={
           'status':'Payout'
         }
         let res = await myDb.queryData('event_id',event_id) as cfg.Bets[]
-        let ids = res.map((item:cfg.Bets) => item.bet_id);
+        let ids = res.map((item:cfg.Bets) => item.bet_id)
         ids.forEach(id=>{
           myDb.updateData(id,updates)
         })
@@ -512,13 +512,13 @@ const Table = (_props: {type:string}) => {
 
   }
   const handleResolveBetsByEvents = async (table:any) =>{
-    const selectedRows = table.getSelectedRowModel().rows;
+    const selectedRows = table.getSelectedRowModel().rows
     let myDb = new dbUtils('bets','bet_id')
-    for (let i=0;i<selectedRows.length;i++) {
+    for (let i=0; i<selectedRows.length; i++) {
       let event_id = selectedRows[i].original[keyName]
       try {
         let res = await myDb.queryData('event_id',event_id) as cfg.Bets[]
-        let ids = res.map((item:cfg.Bets) => item.bet_id);
+        let ids = res.map((item:cfg.Bets) => item.bet_id)
         resolveSelectedBets(ids)
       }catch(e){
           console.error(e)
@@ -535,7 +535,7 @@ const Table = (_props: {type:string}) => {
     let myDb = new dbUtils('bets','bet_id')
       try {
         let res = await myDb.queryData('status','Payout') as cfg.Bets[]
-        let ids = res.map((item:cfg.Bets) => item.bet_id);
+        let ids = res.map((item:cfg.Bets) => item.bet_id)
         resolveSelectedBets(ids)
       }catch(e){
           console.error(e)
@@ -544,9 +544,9 @@ const Table = (_props: {type:string}) => {
 
   }
   const handleResolveBets = async (table:any) =>{
-    const selectedRows = table.getSelectedRowModel().rows;
+    const selectedRows = table.getSelectedRowModel().rows
 
-    for (let i=0;i<selectedRows.length;i++) {
+    for (let i=0; i<selectedRows.length; i++) {
       let id = selectedRows[i].original[keyName]
       let returnMsg = await resolveBet(id)
       console.log(returnMsg)

@@ -1,11 +1,11 @@
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo'
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker'
 import dayjs from 'dayjs'
-import utc from 'dayjs/plugin/utc';
-import timezone from 'dayjs/plugin/timezone';
+import utc from 'dayjs/plugin/utc'
+import timezone from 'dayjs/plugin/timezone'
 
-dayjs.extend(utc);
-dayjs.extend(timezone);
+dayjs.extend(utc)
+dayjs.extend(timezone)
 
 interface DateTimeEditProps {
   datetime: string
@@ -15,7 +15,7 @@ interface DateTimeEditProps {
   export const DateTimeEdit = ({ datetime , onChange}: DateTimeEditProps) => {
 
     const handleChange = async (newValue:any) =>{
-        onChange(newValue.toISOString());
+        onChange(newValue.toISOString())
     }
     return (
       <DemoContainer components={['DateTimePicker']}>

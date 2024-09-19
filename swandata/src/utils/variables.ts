@@ -1,4 +1,4 @@
-import { CastForEducationRounded } from '@mui/icons-material';
+import { CastForEducationRounded } from '@mui/icons-material'
 import { v4 as uuidv4 } from 'uuid'
 
 export const getInitValue=(type:string)=>{
@@ -11,7 +11,7 @@ export const getInitValue=(type:string)=>{
           'market_id':uuidv4(),
           'market_name':''
         }
-    break;
+    break
 
     case 'sports':
         item = {
@@ -19,7 +19,7 @@ export const getInitValue=(type:string)=>{
           'sport_name':'',
           'description':''
         }
-    break;
+    break
 
     case 'model':
         item = {
@@ -32,7 +32,7 @@ export const getInitValue=(type:string)=>{
           'value':'',
           'bottom_price': 0
         }
-    break;
+    break
 
     case "events":
 
@@ -46,7 +46,7 @@ export const getInitValue=(type:string)=>{
         'fixture_id':"", 
         'status':'pending'
       }
-    break;
+    break
 
     case 'bets':
       item = {
@@ -62,7 +62,7 @@ export const getInitValue=(type:string)=>{
         'trader_id':"",
         'status':"Betting"
       }
-    break;
+    break
 
     default:
     case 'trader':
@@ -71,79 +71,79 @@ export const getInitValue=(type:string)=>{
             'trader_name':'',
             'credit':0
         }
-      break;
+      break
   }
-  return item;
+  return item
 }
 
 
 export interface Trader {
-  trader_id: string;
-  trader_name: string;
-  credit: number;
+  trader_id: string
+  trader_name: string
+  credit: number
 }
 
 export interface Sports {
-  sport_id: string;
-  sport_name:string;
-};
+  sport_id: string
+  sport_name:string
+}
 
 export interface Market {
-    market_id: string;
-    market_name:string;
-};
+    market_id: string
+    market_name:string
+}
 
 export interface Model {
-    model_id?: number;
-    selection_id:string;
-    fixture_id: number;
-    event_id: string;
-    market_id: string;
-    selection: string;
-    value: string;
-    bottom_price: number;
-};
+    model_id?: number
+    selection_id:string
+    fixture_id: number
+    event_id: string
+    market_id: string
+    selection: string
+    value: string
+    bottom_price: number
+}
 
 export interface Bets {
-  bet_id: string;
-  fixture_id: number;
-  selection_id: string;
-  event_id: string;
-  market_id: string;
-  selection: string;
-  bet_time: string;
-  stake_size: number;
-  price: number;
-  value: string;
-  trader_id: string;
-  status: string;
+  bet_id: string
+  fixture_id: number
+  selection_id: string
+  event_id: string
+  market_id: string
+  selection: string
+  bet_time: string
+  stake_size: number
+  price: number
+  value: string
+  trader_id: string
+  status: string
 }
 
 export interface Events {
-  event_id:string;
-  event_name: string;
-  event_time: string;
-  participants: string;
-  result: string;
-  score: number;
-  sport_id: string;
-  winner: string;
-  fixture_id: string;
-  status: string;
+  event_id:string
+  event_name: string
+  event_time: string
+  participants: string
+  result: string
+  score: number
+  sport_id: string
+  winner: string
+  fixture_id: string
+  status: string
 }
 export interface CustomObject {
-  [key: string]: any;
+  [key: string]: any
 }
 
 export const selectionStates = [
   "Win", "Correct score", "Under", "Home", "Draw", "Away", "Over" 
-];
+]
 
 export const statusStates = [
-  "Betting", "Payout", "Resolve-Win", "Resolve-Loss","Problem"];
+  "Betting", "Payout", "Resolve-Win", "Resolve-Loss","Problem"]
 
   export const eventStates = [
-    "pending", "result"];
+    "pending", "result"]
 
     export const _WIN_MARKET_ID = 1
     export const _PLACE_MARKET_ID = 2
