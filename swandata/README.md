@@ -48,7 +48,41 @@ bets:
   - trader_id // Who bets on
   - value // Also parameter of the model 
   
-    
+# Framework and Functionalities
+We are using React Material Table for the whole development. https://www.material-react-table.com/
+The powerful and highly customizable framework help on.
+1. realtime connect to cloud database through API
+2. user friendly table-like UI for the operator.
+3. Allow customized components for cell rendering and cell editing. 
+4. Customized button for bulk action on multiple selected/ conditonal row
+
+All functionalities developed:
+- Resolve bets by traders, and auto update their credit.
+- Game result fill up component. A user friendly form to fill up all necessary information for bets resolving.
+- Resolve bets by specific selected events
+- Update bets by specific selected events (mostly the result updated)
+- DateTime component created.
+- AutoComplete component built for operator easily found and matched trader/ events/ sport/ market/ model
+- Selection component for updating different status.
+- UUID for new record's ID generation
+- Green color of "Update Result" button means result updated.
+
+Features to do: 
+- Infinite scroll
+- Row color for different status to notify operators. For example, green row of bets record, mean Payout come, please resolve.
+- Auto scheduler for bets resolving. like daily
+- bets resolving by results updated trigger. Bets resolve can be triggered once results have been updated.
+- Error validation. like, required fields mssing, incorrect value format etc.
+- Result updated by connect to other API or data grabbing.
+
+# Bugs and Error Alert, To Do and Limitation
+- Table.tsx is too long, should be divided it into more files so as to read easily
+- Error validation is missing for most of the components
+- *API key or other secure information should be deal with other measures, instead of store in the code!!
+- Data structure and bets resolve calculation may be wrong, as I don't have any betting experience before.
+- development, staging and production envirnoment, especially database need to be setup.
+- Betting resolving tasks should be executed in backend instead of frontend.
+- Unit test hasn't done.
 
 
 
