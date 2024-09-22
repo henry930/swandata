@@ -55,7 +55,7 @@ export class dbUtils {
     console.log('Data', id,values)
     await set(ref(rtdb, this.tableName+'/' + id), values)
     .then(() => {
-      console.log('Data updated successfully with key:', id,values)
+      console.log('Data updated successfully with key:', id,values, values[this.keyName])
     })
     .catch((error) => {
       console.error('Error updating data:', error)

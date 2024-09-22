@@ -46,14 +46,15 @@ export const MarketEdit = ({ id , onChange}: MarketEditProps) => {
     const myDb = new dbUtils(tableName,keyName)
     
     const handleChange = async (event:any,newValue:any) =>{
+      if (newValue) {
         setSelectedValue(newValue)
         onChange(newValue, id)
+      }
     }
 
     useEffect(() => {
         const getData = async() =>{
             let data = await myDb.fetchData()
-            console.log(data)
             let arr:Option[] = []
             data.forEach(item=>{
                 let res:Option ={label:'',id:''}

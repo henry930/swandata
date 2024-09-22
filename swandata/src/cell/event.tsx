@@ -49,19 +49,20 @@ export const EventEdit = ({ id , onChange}: eventEditProps) => {
     const myDb = new dbUtils(tableName,keyName)
     
     const handleChange = async (event:any,newValue:any) =>{
+      if (newValue) {
         setSelectedValue(newValue)
         onChange(newValue, id)
+      }
     }
     useEffect(() => {
         const getData = async() =>{
             let data = await myDb.fetchData()
-            console.log(data)
             let arr:Option[] = []
             data.forEach(item=>{
                 let res:Option ={label:'',id:''}
                 res.label = item.event_name
                 res.id = item.event_id
-                if (res.id == id){
+                if (res.id == id && res.id!='undefined'){
                     setSelectedValue(res)
                 }
                 arr.push(res)

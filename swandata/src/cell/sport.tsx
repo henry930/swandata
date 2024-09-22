@@ -44,8 +44,10 @@ export const SportEdit = ({ id , onChange}: SportEditProps) => {
     const myDb = new dbUtils(tableName,keyName)
     
     const handleChange = async (event:any,newValue:any) =>{
+      if (newValue) {
         setSelectedValue(newValue)
         onChange(newValue, id)
+      }
     }
     useEffect(() => {
         const getData = async() =>{

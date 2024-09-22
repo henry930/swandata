@@ -48,6 +48,9 @@ const Table = (_props: {type:string}) => {
   const [editedData, setEditedData] = useState<Record<string, any>>({})
 
   // Column Definition. (I am sorry that, I can't seperate them into other files. TO DO)
+  // All id field will using specific component to rendering and editing. It's auto convert to the name instead of id, and also AutoComplete helps finding corrsponding records easily.
+  // DateTime widget helps setup time more easily. 
+  // Events are the games whom for bettings. A result component help operator easily mark the result.
   const TraderColumns = useMemo<MRT_ColumnDef<any>[]>(
     () =>  [
       {
@@ -67,10 +70,16 @@ const Table = (_props: {type:string}) => {
       {
         accessorKey: 'credit',
         header: 'Credit',
-        muiEditTextFieldProps: {
+        type: 'number',
+        Cell: ({ cell }) => (<span>{(Math.round(cell.getValue<number>() * 100) / 100).toFixed(2)}</span>),
+        muiEditTextFieldProps: ({ row }) => ({
           required: true,
           type: 'number',
-        },
+          onChange: (event) => {
+            row.original['credit'] = Number(row.original['credit'])
+            setEditedData({ ...editedData, [row.id]: row.original })
+          }
+        }),
         size: 50,
       }
   ],
@@ -401,7 +410,7 @@ const Table = (_props: {type:string}) => {
             // It is cell. So, need to update manually
               let myDb = new dbUtils('events','event_id')
              
-              let item = {...[row._valuesCache]}
+              let item = {...row._valuesCache}
               myDb.saveData(item)
 
           }
@@ -598,7 +607,7 @@ const Table = (_props: {type:string}) => {
   const updateData =async (values:any) =>{
       await set(ref(rtdb, tableName+'/' + values[keyName]), values)
       .then(() => {
-        console.log('Data updated successfully with key:', values[keyName])
+        console.log('Data updated successfully with key:', values)
         refetch()
       })
       .catch((error) => {
@@ -628,11 +637,32 @@ const Table = (_props: {type:string}) => {
   //UPDATE action for edit data button. Some pre or post process in data editing
   const handleSaveData: MRT_TableOptions<any>['onEditingRowSave'] = async ({
     values,
-    table,
+    table
   }) => {
-    table.setEditingRow(null) //exit editing mode
-    await updateData(values) 
-    refetch()
+    try {
+      table.setEditingRow(null) //exit editing mode
+      table.getAllColumns().forEach((column:any) => {
+        // Check if the column is of type 'number'
+        try{
+          if (column.columnDef['type'] === 'number') {
+            values[column.id] = Number(values[column.id]);
+          }
+        }catch(e){
+          console.log(e)
+        }  
+      });
+      await updateData(values) 
+      refetch()
+    } catch(e){
+
+    }
+
+  }
+
+  
+  const handleSaveRowData =async(newData:any, oldData:any) =>{
+    console.log(newData,oldData)
+    // Your logic to handle row update
   }
 
   //DELETE action for delete data button. Some pre or post process in data editing
@@ -679,6 +709,7 @@ const Table = (_props: {type:string}) => {
       },
     },
     onCreatingRowSave: handleCreateData,
+    // onRowUpdate: handleSaveRowData,
     onEditingRowSave: handleSaveData,
     renderCreateRowDialogContent: ({ table, row, internalEditComponents }) => (
       <>
@@ -746,19 +777,19 @@ const Table = (_props: {type:string}) => {
         >
             Reload Data
         </Button>
-        {(tableName=='bets') && (
+        {(tableName==='bets') && (
           <div>
             <Button variant="contained" onClick={()=>handleResolveBets(table)}>Resolve Selected Bets</Button>
             <Button variant="contained" onClick={()=>handleResolvePayoutBets(table)}>Resolve Payout Bets</Button>
           </div>
         )}  
-        {(tableName=='events') && (
+        {(tableName==='events') && (
           <div>
             <Button variant="contained" onClick={()=>handleResolveBetsByEvents(table)}>Resolve Bets By Event</Button>
             <Button variant="contained" onClick={()=>handleUpdateBetsByEvents(table)}>Update Bets Status By Event</Button>
           </div>
         )}  
-        {(tableName=='trader') && (
+        {(tableName==='trader') && (
           <div>
             <Button variant="contained" onClick={()=>handleResolveBetsByTrader(table)}>Resolve Bets By Trader</Button>
           </div>
